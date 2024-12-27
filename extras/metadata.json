@@ -1,0 +1,11 @@
+{
+    "name": "Contour Test",
+    "type": "baselayer",
+    "description": "",
+    "version": "1",
+    "format": "pbf",
+    "minzoom": "6",
+    "maxzoom": "12",
+    "json": "{\"vector_layers\":[{\"id\":\"contours\",\"fields\":{\"ele\":\"Number\",\"level\":\"Number\"},\"minzoom\":6,\"maxzoom\":12}]}",
+    "bounds": "-180.000000,-85.051129,180.000000,85.051129"
+}
