@@ -1,6 +1,6 @@
 # Contour Generator
 
-Generates contour tiles in mapbox vector format using a maplibre-contour. It allows maplibre-contour to work with pmtiles (local or http) when the demUrl is prefixed with 'pmtiles://' and output to local mvt tiles.
+Generates contour tiles in mapbox vector format using a maplibre-contour. It allows maplibre-contour to work with pmtiles (local or http) when the demUrl is prefixed with 'pmtiles://' and outputs to local mvt tiles.
 
 This outputs files in the <oDir>/z/z/y.pbf format, which can be impoted with mbutil. Note an example metadata.json file has been included which can be placed in the <oDir> directory and edited before using mbutil.
 
