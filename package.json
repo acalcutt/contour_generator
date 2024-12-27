@@ -1,0 +1,38 @@
+{
+  "name": "contour_generator",
+  "version": "0.0.1",
+  "description": "Locally generates contour vector tiles using maplibre-contour",
+  "main": "src/generate-countour-tile-pyramid.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acalcutt/contour_generator.git"
+  },
+  "keywords": [
+    "maplibre",
+    "vector",
+    "tile",
+    "mvt"
+  ],
+  "author": "Andrew Calcutt",
+  "license": "BSD-3-Clause",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/acalcutt/contour_generator/issues"
+  },
+  "homepage": "https://github.com/acalcutt/contour_generator#readme",
+  "dependencies": {
+    "@mapbox/tilebelt": "^2.0.2",
+    "commander": "^12.1.0",
+    "maplibre-contour": "^0.1.0",
+    "pmtiles": "^4.1.0",
+    "sharp": "^0.33.5",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}
