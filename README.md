@@ -11,7 +11,7 @@ npm isntall
 
 # Scripts
 
-src/generate-countour-tile-pyramid.ts - Generates all child tiles from a specidied parent tile up to a specified zoom level
+src/generate-countour-tile-pyramid.ts - Generates all child tiles from a specified parent tile up to a specified zoom level
 
 ```
 Useage: npx tsx ./src/generate-countour-tile-pyramid.ts --x <tile x> --y <tile y> --z <tile z> --demUrl [options]
