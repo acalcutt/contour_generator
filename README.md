@@ -29,7 +29,7 @@ Options:
   -h, --help            display help for command
   ```
 
-generate_all_tiles_at_zoom.sh - Gets all tiles at a specidied zoom level, then runs generate-countour-tile-pyramid.ts for them all in parrallel.
+generate_all_tiles_at_zoom.sh - Gets all tiles at a specified zoom level, then runs generate-countour-tile-pyramid.ts for them all in parrallel.
 ```
 Usage: ./generate_all_tiles_at_zoom.sh --demUrl <path> [options]
  Options:
