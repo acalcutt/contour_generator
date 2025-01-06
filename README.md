@@ -47,19 +47,21 @@ Usage: ./generate_all_tiles_at_zoom.sh --demUrl <path> [options]
 
 # Use with Docker
 
-build the docker image
-```
-docker build -t contour-generator .
-```
+This is published to docker hub as 'wifidb/contour-generator'
 
 Use the docker image to run 'src/generate-countour-tile-pyramid.ts' (example)
 ```
-docker run -it -v $(pwd):/data contour-generator './generate_all_tiles_at_zoom.sh --sEncoding mapbox --demUrl "pmtiles:///data/raster-dem.pmtiles" --oDir /data/output'
+docker run -it -v $(pwd):/data wifidb/contour-generator './generate_all_tiles_at_zoom.sh --sEncoding mapbox --demUrl "pmtiles:///data/raster-dem.pmtiles" --oDir /data/output'
 ```
 
 Use the docker image to run 'generate_all_tiles_at_zoom.sh' (example)
 ```
-docker run -it -v $(pwd):/data contour-generator 'npx tsx ./src/generate-countour-tile-pyramid.ts --x 5 --y 17 --z 5 --sEncoding mapbox --demUrl "pmtiles:///data/raster-dem.pmtiles" --oDir /data/output'
+docker run -it -v $(pwd):/data wifidb/contour-generator 'npx tsx ./src/generate-countour-tile-pyramid.ts --x 5 --y 17 --z 5 --sEncoding mapbox --demUrl "pmtiles:///data/raster-dem.pmtiles" --oDir /data/output'
 ```
 
 Note that the '-v $(pwd):/data' part of the commands above means your local working director '$(pwd)' will get mapped to '/data' inside the docker image, which it why '/data' is used in the --demUrl and --oDir parameters to input from and output to the mapped directory. $(pwd) could be changed to any local directory.
+
+Build the docker image locally
+```
+docker build -t contour-generator .
+```
