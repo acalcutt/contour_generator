@@ -59,7 +59,7 @@ Use the docker image to run 'generate_all_tiles_at_zoom.sh' (example)
 docker run -it -v $(pwd):/data wifidb/contour-generator './generate_all_tiles_at_zoom.sh --sEncoding mapbox --demUrl "pmtiles:///data/raster-dem.pmtiles" --oDir /data/output'
 ```
 
-Note that the ```-v $(pwd):/data``` part of the commands above means your local working director ```$(pwd)``` will get mapped to '/data' inside the docker image, which it why '/data' is used in the --demUrl and --oDir parameters to input from and output to the mapped directory. $(pwd) could be changed to any local directory.
+Note that the ```-v $(pwd):/data``` part of the commands above means your local working directory ```$(pwd)``` will get mapped to ```/data``` inside the docker image, which it why '/data' is used in the --demUrl and --oDir parameters to input from and output to the mapped directory. $(pwd) could be changed to any local directory.
 
 Build the docker image locally
 ```
