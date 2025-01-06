@@ -1,6 +1,6 @@
 {
   "name": "contour_generator",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Locally generates contour vector tiles using maplibre-contour",
   "main": "src/generate-countour-tile-pyramid.ts",
   "scripts": {
