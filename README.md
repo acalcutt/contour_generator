@@ -6,6 +6,7 @@ This outputs files in the <oDir>/z/x/y.pbf format, which can be impoted with mbu
 
 # Install
 ```
+apt-get install bc
 npm isntall
 ```
 
@@ -43,3 +44,22 @@ Usage: ./generate_all_tiles_at_zoom.sh --demUrl <path> [options]
   -v|--verbose  Enable verbose output
   -h|--help  Show this usage statement
 ```
+
+# Use with Docker
+
+build the docker image
+```
+docker build -t contour-generator .
+```
+
+Use the docker image to run 'src/generate-countour-tile-pyramid.ts' (example)
+```
+docker run -it -v $(pwd):/data contour-generator './generate_all_tiles_at_zoom.sh --sEncoding mapbox --demUrl "pmtiles:///data/raster-dem.pmtiles" --oDir /data/output'
+```
+
+Use the docker image to run 'generate_all_tiles_at_zoom.sh' (example)
+```
+docker run -it -v $(pwd):/data contour-generator 'npx tsx ./src/generate-countour-tile-pyramid.ts --x 5 --y 17 --z 5 --sEncoding mapbox --demUrl "pmtiles:///data/raster-dem.pmtiles" --oDir /data/output'
+```
+
+Note that the '-v $(pwd):/data' part of the commands above means your local working director '$(pwd)' will get mapped to '/data' inside the docker image, which it why '/data' is used in the --demUrl and --oDir parameters to input from and output to the mapped directory. $(pwd) could be changed to any local directory.
