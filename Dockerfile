@@ -10,6 +10,8 @@ COPY . .
 # Install dependencies
 RUN npm install
 
+RUN npm i -g npm@latest
+
 # Create a new stage for the final image
 FROM node:22-slim
 
