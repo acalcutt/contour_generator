@@ -2,7 +2,7 @@
 
 Generates contour tiles in mapbox vector format from terrain raster-dem using [maplibre-contour](https://github.com/onthegomap/maplibre-contour). It allows maplibre-contour to work with pmtiles (local or http) when the demUrl is prefixed with 'pmtiles://' and outputs to local mvt tiles.
 
-This outputs files in the ```<oDir>/z/x/y.pbf``` format, which can be impoted with [mbutil](https://github.com/mapbox/mbutil). Note an example metadata.json file has been included in the extras which can be placed in the ```<oDir>``` directory and edited before using mbutil. The synax to import these tiles with mbutil would be ```python3 mb-util --image_format=pbf <oDir> output.mbtiles```
+This outputs files in the ```<oDir>/z/x/y.pbf``` format, which can be impoted with [mbutil](https://github.com/mapbox/mbutil). Note an example metadata.json file has been included in the extras folder which can be placed in the ```<oDir>``` directory and edited before using mbutil. The synax to import these tiles with mbutil would be ```python3 mb-util --image_format=pbf <oDir> output.mbtiles```
 
 # Install
 ```
