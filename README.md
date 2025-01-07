@@ -6,7 +6,8 @@ This script outputs tile files in the ```<oDir>/z/x/y.pbf``` format and generate
 
 # Install
 ```
-apt-get install bc shfmt
+apt-get install bc #Required for bash math functions
+apt-get install shfmt #only needed for 'npm run format:sh'
 npm install
 ```
 
