@@ -71,22 +71,22 @@ const numOMaxZoom = Number(oMaxZoom);
 // Functions
 // --------------------------------------------------
 
-function getAllTiles(tile: Tile, maxZoom: number): Tile[] {
-  let allTiles: Tile[] = [tile];
+function getAllTiles(tile: Tile, oMaxZoom: number): Tile[] {
+    let allTiles: Tile[] = [tile];
 
-  function getTileList(tile: Tile) {
-    const children: Tile[] = getChildren(tile);
-    allTiles = allTiles.concat(children);
-    for (const childTile of children) {
-      const childZoom = childTile[2];
-      if (childZoom < maxZoom) {
-        getTileList(childTile);
-      }
+    function getTileList(tile: Tile) {
+        const children: Tile[] = getChildren(tile).filter(child => child[2] <= oMaxZoom);
+        allTiles = allTiles.concat(children);
+        for (const childTile of children) {
+            const childZoom = childTile[2];
+            if (childZoom < oMaxZoom) {
+                getTileList(childTile);
+            }
+        }
     }
-  }
 
-  getTileList(tile);
-  return allTiles;
+    getTileList(tile);
+    return allTiles;
 }
 
 async function processTile(v: Tile): Promise<void> {
