@@ -59,7 +59,8 @@ pyramid function (Generates tiles from a parent tile):
   --demUrl "pmtiles://path/to/your/dem.pmtiles" \
   --increment 50 \
   --oDir "./output_pyramid" \
-   --oMaxZoom 10
+  --oMaxZoom 10 \
+  -v
 ```
 
 zoom function (Generates tiles at and above a zoom level):
@@ -69,7 +70,8 @@ zoom function (Generates tiles at and above a zoom level):
   --oDir "./output_zoom" \
   --oMinZoom 8 \
   --increment 0 \
-   --processes 10
+   --processes 10 \
+  -v
 ```
 
 bbox function (Generates tiles within a bounding box):
@@ -82,8 +84,8 @@ bbox function (Generates tiles within a bounding box):
   --demUrl "pmtiles://path/to/your/dem.pmtiles" \
   --oMinZoom 10 \
   --oDir "./output_bbox" \
-    --increment 10 \
-    -v
+  --increment 10 \
+  -v
 ```
 
 # Use with Docker
@@ -103,7 +105,8 @@ pyramid function (using Docker):
     --demUrl "pmtiles:///data/raster-dem.pmtiles" \
     --oDir /data/output \
     --increment 50 \
-    --oMaxZoom 8
+    --oMaxZoom 8 \
+    -v
 ```
 
 zoom function (using Docker):
@@ -114,7 +117,8 @@ docker run -it -v $(pwd):/data wifidb/contour-generator \
     --oDir /data/output \
      --oMinZoom 5 \
      --oMinZoom 8 \
-     --processes 8
+     --processes 8 \
+    -v
 ```
 
 bbox function (using Docker):
@@ -129,7 +133,7 @@ docker run -it -v $(pwd):/data wifidb/contour-generator \
     --oDir /data/output \
     --oMinZoom 10 \
     --increment 10 \
-     -v
+    -v
 ```
 
 Building Dockerfile Locally
