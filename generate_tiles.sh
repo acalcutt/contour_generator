@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Default Values (except demUrl and oDir)
+verbose_default=false
 increment_default=0
 sMaxZoom_default=8
 sEncoding_default="mapbox"
@@ -8,12 +9,13 @@ oMaxZoom_default=8
 oMinZoom_default=5
 oDir_default=./output
 
-usage() {
+usage_message() {
     echo "Usage: $0 <function> [options]" >&2
     echo "" >&2
     echo "Functions:" >&2
-    echo "  generate-tile-pyramid  generates all tiles under a parent tile up to a max zoom level." >&2
-    echo "  generate-zoom-level    generates a list of all tiles at a zoom level, then downloads all children up to a max zoom level." >&2
+    echo "  generate-tile-pyramid  generates contours for a parent tile and all child tiles up to a specified max zoom level." >&2
+    echo "  generate-zoom-level    generates a list of parent tiles at a specifed zoom level, then runs generate-tile-pyramid on" >&2
+    echo "                         each of them in parallel" >&2
     echo "" >&2
     echo " Options for function generate-tile-pyramid:" >&2
     echo "  --x <number>          The X coordinate of the parent tile." >&2
@@ -31,18 +33,23 @@ usage() {
     echo "  --sEncoding <string>  The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: $sEncoding_default)" >&2
     echo "  --sMaxZoom <number>   The maximum zoom level of the source DEM. (default: $sMaxZoom_default)" >&2
     echo "  --increment <number>  The contour increment value to extract. Use 0 for default thresholds." >&2
-    echo "  --sMaxZoom <number>   The maximum zoom level of the source DEM. (default: $sMaxZoom_default)" >&2
-    echo "  --sEncoding <string>  The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: $sEncoding_default)" >&2
-    echo "  --oDir <string>       The output directory where tiles will be stored. (default: $oDir_default)" >&2
-    echo "  --oMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: $oMinZoom_default)" >&2
     echo "  --oMaxZoom <number>   The maximum zoom level of the output tile pyramid. (default: $oMaxZoom_default)" >&2
+    echo "  --oMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: $oMinZoom_default)" >&2
+    echo "  --oDir <string>       The output directory where tiles will be stored. (default: $oDir_default)" >&2
     echo "" >&2
     echo "  -v|--verbose  Enable verbose output" >&2
     echo "  -h|--help  Show this usage statement" >&2
+    echo "" >&2
+}
+
+usage() {
+    usage_message
+    exit 1
 }
 
 # Function to parse command line arguments for function generate-tile-pyramid
 parse_arguments_option_1() {
+    local verbose="$verbose_default"
     local x=""
     local y=""
     local z=""
@@ -65,6 +72,7 @@ parse_arguments_option_1() {
             --oMaxZoom) oMaxZoom="$2"; shift 2;;
             --oDir) oDir="$2"; shift 2;;
             -h|--help) usage; exit 1;;
+            -v|--verbose) verbose=true; shift ;;
             *) echo "Unknown option: $1" >&2; usage; exit 1;;
         esac
     done
@@ -72,24 +80,25 @@ parse_arguments_option_1() {
     # Check if all required values are provided
     if [[ -z "$x" || -z "$y" || -z "$z" || -z "$demUrl" || -z "$increment" ]]; then
         echo "Error: --x, --y, --z, --demUrl, and --increment are required for function generate-tile-pyramid." >&2
-        usage
+        usage_message
+        echo "Error: --x, --y, --z, --demUrl, and --increment are required for function generate-tile-pyramid." >&2
         exit 1
     fi
 
     # check for valid sEncoding
     if [[ "$sEncoding" != "mapbox" && "$sEncoding" != "terrarium" ]]; then
+        usage_message
         echo "Error: --sEncoding must be either 'mapbox' or 'terrarium'." >&2
-        usage
         exit 1 # Return non-zero on error
     fi
 
-    echo "$x $y $z $demUrl $sEncoding $sMaxZoom $increment $oMaxZoom $oDir"
+    echo "$x $y $z $demUrl $sEncoding $sMaxZoom $increment $oMaxZoom $oDir $verbose"
     return 0
 }
 
 # Function to parse command line arguments for function generate-zoom-level
 parse_arguments_option_2() {
-    local verbose=false
+    local verbose="$verbose_default"
     local demUrl=""
     local oDir="$oDir_default"
     local increment="$increment_default"
@@ -115,15 +124,15 @@ parse_arguments_option_2() {
 
     # Check if demUrl and oDir are provided
     if [[ -z "$demUrl" ]]; then
+        usage_message
         echo "Error: --demUrl is required." >&2
-        usage
         exit 1 # Return non-zero on error
     fi
 
     # Check if sEncoding is valid
     if [[ "$sEncoding" != "mapbox" && "$sEncoding" != "terrarium" ]]; then
+        usage_message
         echo "Error: --sEncoding must be either 'mapbox' or 'terrarium'." >&2
-        usage
         exit 1 # Return non-zero on error
     fi
 
@@ -135,10 +144,17 @@ parse_arguments_option_2() {
 # Function 1: Generate all tiles under parent tile
 run_option_1() {
     local programOptions="$1"
-    read x y z demUrl sEncoding sMaxZoom increment oMaxZoom oDir <<<"$programOptions"
+    read x y z demUrl sEncoding sMaxZoom increment oMaxZoom oDir verbose <<<"$programOptions"
 
-    echo "Executing Function 1: npx tsx ./src/generate-countour-tile-pyramid.ts --x $x --y $y --z $z --demUrl $demUrl --sEncoding $sEncoding --sMaxZoom $sMaxZoom --increment $increment --oMaxZoom $oMaxZoom --oDir $oDir"
+    if [[ "$verbose" = "true" ]]; then
+        echo "process_tile: [START] Processing tile - Zoom: $z, X: $x, Y: $y, oMaxZoom: $oMaxZoom"
+    fi
+
     npx tsx ./src/generate-countour-tile-pyramid.ts --x "$x" --y "$y" --z "$z" --demUrl "$demUrl" --sEncoding "$sEncoding" --sMaxZoom "$sMaxZoom" --increment "$increment" --oMaxZoom "$oMaxZoom" --oDir "$oDir"
+
+    if [[ "$verbose" = "true" ]]; then
+        echo "process_tile: [END] Finished processing $z-$x-$y"
+    fi
 }
 
 # Function 2: Generate all tiles at and above zoom level
@@ -231,7 +247,6 @@ run_option_2() {
 # --- Main Script ---
 if [[ $# -eq 0 ]]; then
     usage
-    exit 1
 fi
 
 function="$1"
@@ -245,6 +260,7 @@ case "$function" in
     programOptions=$(parse_arguments_option_1 "$@")
     ret=$? # capture exit status
     if [[ "$ret" -ne 0 ]]; then
+        # Error message will already be handled above
         exit "$ret"
     fi
     run_option_1 "$programOptions"
@@ -253,13 +269,14 @@ case "$function" in
     programOptions=$(parse_arguments_option_2 "$@")
     ret=$? # capture exit status
     if [[ "$ret" -ne 0 ]]; then
+        # Error message will already be handled above
         exit "$ret"
     fi
     run_option_2 "$programOptions"
     ;;
 *)
     echo "Invalid function: $function" >&2
-    usage
+    usage_message
     exit 1
     ;;
 esac
