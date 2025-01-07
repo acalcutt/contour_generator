@@ -86,7 +86,7 @@ bbox function (Generates tiles within a bounding box):
 ```
 
 # Use with Docker
-This image is published to Docker Hub as wifidb/contour-generator.
+This image is published to Docker Hub as [wifidb/contour-generator](https://hub.docker.com/r/wifidb/contour-generator).
 
 The docker image wifidb/contour-generator can be used for generating tiles in different ways
 
