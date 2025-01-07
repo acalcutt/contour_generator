@@ -513,7 +513,8 @@ export -f create_metadata
 
 # --- Main Script ---
 if [[ $# -eq 0 ]]; then
-	usage
+	usage_message
+	exit 1
 fi
 
 function="$1"
