@@ -17,7 +17,7 @@ usage_message() {
 	echo "Functions:" >&2
 	echo " pyramid   generates contours for a parent tile and all child tiles up to a specified max zoom level." >&2
 	echo " zoom      generates a list of parent tiles at a specifed zoom level, then runs pyramid on each of them in parallel" >&2
-	echo " bbox      generates a list of parent tiles inside a bounding box, then runs pyramid on each of them in parallel" >&2
+	echo " bbox      generates a list of parent tiles that cover a bounding box, then runs pyramid on each of them in parallel" >&2
 	echo "" >&2
 	echo " General Options" >&2
 	echo "  --demUrl <string>    The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)" >&2

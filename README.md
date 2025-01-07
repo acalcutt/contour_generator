@@ -1,12 +1,12 @@
 # Contour Generator
 
-Generates contour tiles in Mapbox Vector Tile (MVT) format from terrain raster DEM data using [maplibre-contour](https://github.com/onthegomap/maplibre-contour). It allows `maplibre-contour` to work with PMTiles (local or HTTP) when the `demUrl` is prefixed with `pmtiles://` and outputs to local MVT tiles.
+Generates contour tiles in Mapbox Vector Tile (MVT) format from terrain raster-dem data using [maplibre-contour](https://github.com/onthegomap/maplibre-contour). It allows `maplibre-contour` to work with PMTiles (local or HTTP) when the `demUrl` is prefixed with `pmtiles://` and outputs to local MVT tiles.
 
-This outputs files in the ```<oDir>/z/x/y.pbf``` format, which can be imported with [mbutil](https://github.com/mapbox/mbutil). Note an example `metadata.json` file has been included, which should be placed in the ```<oDir>``` directory and edited before using `mbutil`. The syntax to import these tiles with mbutil would be:
+This script outputs tile files in the ```<oDir>/z/x/y.pbf``` format and generates a ```<oDir>/metadata.json``` file. These files can be imported using [mbutil](https://github.com/mapbox/mbutil). For example, to import the tiles into an mbtiles file using mbutil, the syntax would be: ```python3 mb-util --image_format=pbf <oDir> output.mbtiles```.
 
 # Install
 ```
-apt-get install bc
+apt-get install bc shfmt
 npm install
 ```
 
@@ -18,7 +18,7 @@ Usage: ./generate_tiles.sh <function> [options]
 Functions:
  pyramid   generates contours for a parent tile and all child tiles up to a specified max zoom level.
  zoom      generates a list of parent tiles at a specifed zoom level, then runs pyramid on each of them in parallel
- bbox      generates a list of parent tiles inside a bounding box, then runs pyramid on each of them in parallel
+ bbox      generates a list of parent tiles that cover a bounding box, then runs pyramid on each of them in parallel
 
  General Options
   --demUrl <string>     The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)
