@@ -10,6 +10,11 @@ oDir_default=./output
 
 usage() {
     echo "Usage: $0 <function> [options]" >&2
+    echo "" >&2
+    echo "Functions:" >&2
+    echo "  generate-tile-pyramid  generates all tiles under a parent tile up to a max zoom level." >&2
+    echo "  generate-zoom-level    generates a list of all tiles at a zoom level, then downloads all children up to a max zoom level." >&2
+    echo "" >&2
     echo " Options for function generate-tile-pyramid:" >&2
     echo "  --x <number>          The X coordinate of the parent tile." >&2
     echo "  --y <number>          The Y coordinate of the parent tile." >&2
@@ -17,25 +22,23 @@ usage() {
     echo "  --demUrl <string>     The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)" >&2
     echo "  --sEncoding <string>  The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: $sEncoding_default)" >&2
     echo "  --sMaxZoom <number>   The maximum zoom level of the source DEM. (default: $sMaxZoom_default)" >&2
-    echo "  --increment <number>  The contour increment value to extract." >&2
+    echo "  --increment <number>  The contour increment value to extract. Use 0 for default thresholds." >&2
     echo "  --oMaxZoom <number>   The maximum zoom level of the output tile pyramid. (default: $oMaxZoom_default)" >&2
     echo "  --oDir <string>       The output directory where tiles will be stored. (default: $oDir_default)" >&2
     echo "" >&2
     echo "Options for function generate-zoom-level:" >&2
-    echo "  --increment <number>  The contour increment value to extract. (default: $increment_default)" >&2
+    echo "  --demUrl <string>     The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)" >&2
+    echo "  --sEncoding <string>  The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: $sEncoding_default)" >&2
+    echo "  --sMaxZoom <number>   The maximum zoom level of the source DEM. (default: $sMaxZoom_default)" >&2
+    echo "  --increment <number>  The contour increment value to extract. Use 0 for default thresholds." >&2
     echo "  --sMaxZoom <number>   The maximum zoom level of the source DEM. (default: $sMaxZoom_default)" >&2
     echo "  --sEncoding <string>  The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: $sEncoding_default)" >&2
-    echo "  --demUrl <string>     The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)" >&2
     echo "  --oDir <string>       The output directory where tiles will be stored. (default: $oDir_default)" >&2
-    echo "  --oMaxZoom <number>   The maximum zoom level of the output tile pyramid. (default: $oMaxZoom_default)" >&2
     echo "  --oMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: $oMinZoom_default)" >&2
+    echo "  --oMaxZoom <number>   The maximum zoom level of the output tile pyramid. (default: $oMaxZoom_default)" >&2
     echo "" >&2
     echo "  -v|--verbose  Enable verbose output" >&2
     echo "  -h|--help  Show this usage statement" >&2
-    echo "" >&2
-    echo "Functions:" >&2
-    echo "  generate-tile-pyramid" >&2
-    echo "  generate-zoom-level" >&2
 }
 
 # Function to parse command line arguments for function generate-tile-pyramid
@@ -104,7 +107,7 @@ parse_arguments_option_2() {
         --demUrl) demUrl="$2"; shift 2 ;;
         --oDir) oDir="$2"; shift 2 ;;
         --oMaxZoom) oMaxZoom="$2"; shift 2 ;;
-        --oMinZoom) oMinZoom="$2"; shift 2 ;;		
+        --oMinZoom) oMinZoom="$2"; shift 2 ;;
         -v|--verbose) verbose=true; shift ;;
         *) echo "Unknown option: $1" >&2; usage; exit 1;; # Return non-zero on error
         esac
@@ -144,7 +147,6 @@ process_tile() {
     local zoom_level="$1"
     local x_coord="$2"
     local y_coord="$3"
- 
 
     read oMinZoom demUrl oDir increment sMaxZoom sEncoding oMaxZoom verbose <<<"$programOptions"
 
@@ -198,7 +200,7 @@ run_option_2() {
     echo "Output Max Zoom: $oMaxZoom"
     echo "Contour Increment: $increment"
     echo "Main: [START] Processing tiles."
-    
+
     # Capture the return value using a pipe.
     tile_coords_str=$(generate_tile_coordinates "$oMinZoom")
 
@@ -207,14 +209,14 @@ run_option_2() {
             echo "Main: [INFO] Starting tile processing for zoom level $oMinZoom"
         fi
         #Ensure xargs only runs if it doesn't receive a signal
-         trap_return() {
-           if [ $? -ne 0 ]; then
-              echo "Exiting..." >&2
-             exit 1
-           fi
+        trap_return() {
+            if [ $? -ne 0 ]; then
+                echo "Exiting..." >&2
+                exit 1
+            fi
         }
-       trap  trap_return  INT TERM 
-	    echo "$tile_coords_str" | xargs -P 8 -n 3 bash -c 'process_tile "$1" "$2" "$3"' "$programOptions"
+        trap trap_return INT TERM
+        echo "$tile_coords_str" | xargs -P 8 -n 3 bash -c 'process_tile "$1" "$2" "$3"' "$programOptions"
         if [[ "$verbose" = "true" ]]; then
             echo "Main: [INFO] Finished tile processing for zoom level $oMinZoom"
         fi
