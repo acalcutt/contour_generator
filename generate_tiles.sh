@@ -122,7 +122,6 @@ parse_arguments_option_1() {
 
 	# Check if all required values are provided
 	if [[ -z "${x}" || -z "${y}" || -z "${z}" || -z "${demUrl}" || -z "${increment}" ]]; then
-		echo "Error: --x, --y, --z, --demUrl, and --increment are required for function pyramid." >&2
 		usage_message
 		echo "Error: --x, --y, --z, --demUrl, and --increment are required for function pyramid." >&2
 		exit 1
