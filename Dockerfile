@@ -4,31 +4,38 @@ FROM node:22-slim AS builder
 # Set the working directory in the container
 WORKDIR /app
 
+# Copy package.json and package-lock.json first
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
 # Copy the application files to the container
 COPY . .
 
-# Install dependencies
-RUN npm install
-
-RUN npm i -g npm@latest
-
 # Create a new stage for the final image
 FROM node:22-slim
+
+# Install bc and upgrade npm (as root)
+RUN apt-get update && apt-get install -y bc
+RUN npm i -g npm@latest
+
+# Create a non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Create folder for data mapping and set ownership (as root)
+RUN mkdir -p /data && chown appuser:appuser /data
+VOLUME /data
 
 # Copy all files from the builder stage
 COPY --from=builder /app /app
 WORKDIR /app
 
-# Install bc
-RUN apt-get update && apt-get install -y bc
+# Make the shell script executable (as root)
+RUN chmod +x /app/generate_tiles.sh
 
-# Create folder for data mapping
-RUN mkdir -p /data && chown node:node /data
-VOLUME /data
-
-# Make the shell script executable
-RUN chmod +x /app/generate_all_tiles_at_zoom.sh
+# Switch to non-root user
+USER appuser
 
 # Entrypoint to allow running commands
-ENTRYPOINT ["/bin/bash", "-c"]
-
+ENTRYPOINT ["/app/generate_tiles.sh"]
