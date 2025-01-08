@@ -11,34 +11,36 @@ The docker image wifidb/contour-generator can be used for generating tiles in di
 
 # Docker Examples:
 
-pyramid function (using Docker w/pmtiles local source):
+pyramid function (using Docker w/pmtiles https source):
 ```
- wget https://github.com/acalcutt/contour_generator/releases/download/test_data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles
  docker run -it -v $(pwd):/data wifidb/contour-generator \
     pyramid \
-    --x 10 \
-    --y 20 \
-    --z 5 \
-    --demUrl "pmtiles:///data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles" \
+    --z 9 \
+    --x 272 \
+    --y 179 \
+    --demUrl "pmtiles://https://acalcutt.github.io/contour_generator/test_data/terrain-tiles.pmtiles" \
+    --sourceMaxZoom 12 \
     --encoding mapbox \
-    --sourceMaxZoom 7 \
-    --outputDir /data/output \
-    --increment 50 \
-    --outputMinZoom 4 \
-    --outputMaxZoom 7 \
+    --increment 0 \
+    --outputDir "/data/output_pyramid" \
+    --outputMaxZoom 15 \
     -v
 ```
 
-zoom function (using Docker w/pmtiles https source):
+zoom function (using Docker w/pmtiles local source):
 ```
+#Downlad the test data into your local directory
+wget https://github.com/acalcutt/contour_generator/releases/download/test_data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles
+
 docker run -it -v $(pwd):/data wifidb/contour-generator \
     zoom \
-    --demUrl "pmtiles://https://github.com/acalcutt/contour_generator/releases/download/test_data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles" \
-    --encoding mapbox \
-    --outputDir /data/output \
+    --demUrl "pmtiles:///data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles" \
+    --outputDir "/data/output_zoom" \
     --sourceMaxZoom 7 \
+    --encoding mapbox \
     --outputMinZoom 5 \
-    --outputMinZoom 7 \
+    --outputMaxZoom 8 \
+    --increment 100 \
     --processes 8 \
     -v
 ```
@@ -52,25 +54,18 @@ docker run -it -v $(pwd):/data wifidb/contour-generator \
     --maxx -69.93 \
     --maxy 42.88 \
     --demUrl "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" \
-    --encoding terrarium \
     --sourceMaxZoom 15 \
-    --outputDir /data/output \
-    --outputMinZoom 6 \
-    --outputMinZoom 10 \
-    --increment 0 \
+    --encoding terrarium \
+    --increment 50 \
+    --outputMinZoom 5 \
+    --outputMaxZoom 10 \
+    --outputDir "/data/output_bbox" \
     -v
-```
-
-Building Dockerfile Locally
-```
-docker build -t contour-generator .
 ```
 
 Important Notes:
 
-The -v $(pwd):/data part of the docker run command maps your local working directory ($(pwd)) to /data inside the Docker container. Therefore, your DEM file must be located in the /data directory inside of the docker image, and the output directory must also be in the /data directory.
-Replace the example pmtiles:///data/raster-dem.pmtiles with your actual file names, and output with your output name.
-
+The -v ```$(pwd):/data``` part of the docker run command maps your local working directory ```$(pwd)``` to ```/data``` inside the Docker container. Therefore, your DEM file must be located in the ```/data``` directory inside of the docker image, and the output directory must also be in the ```/data``` directory.
 
 # Install
 ```
@@ -120,26 +115,32 @@ Usage Examples:
 pyramid function (Run Locally w/zxyPattern source):
 ```
 ./generate_tiles.sh pyramid \
-  --x 10 \
-  --y 20 \
-  --z 5 \
-  --demUrl "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" \
-  --encoding terrarium \
-  --increment 50 \
+  --z 9 \
+  --x 272 \
+  --y 179 \
+  --demUrl "pmtiles://https://acalcutt.github.io/contour_generator/test_data/terrain-tiles.pmtiles" \
+  --sourceMaxZoom 12 \
+  --encoding mapbox \
+  --increment 0 \
   --outputDir "./output_pyramid" \
-  --outputMaxZoom 10 \
+  --outputMaxZoom 15 \
   -v
 ```
 
 zoom function (Run Locally w/pmtiles local source):
 ```
+#Downlad the test data into your local directory
 wget https://github.com/acalcutt/contour_generator/releases/download/test_data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles
+
 ./generate_tiles.sh zoom \
   --demUrl "pmtiles://./JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles" \
   --outputDir "./output_zoom" \
-  --outputMinZoom 8 \
-  --increment 0 \
-   --processes 10 \
+  --sourceMaxZoom 7 \
+  --encoding mapbox \
+  --outputMinZoom 5 \
+  --outputMaxZoom 8 \
+  --increment 100 \
+  --processes 8 \
   -v
 ```
 
@@ -150,9 +151,12 @@ bbox function (Run Locally w/pmtiles https source):
   --miny 41.23 \
   --maxx -69.93 \
   --maxy 42.88 \
-  --demUrl "pmtiles://https://github.com/acalcutt/contour_generator/releases/download/test_data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles" \
-  --outputMinZoom 10 \
+  --demUrl "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" \
+  --sourceMaxZoom 15 \
+  --encoding terrarium \
+  --increment 50 \
+  --outputMinZoom 5 \
+  --outputMaxZoom 10 \
   --outputDir "./output_bbox" \
-  --increment 10 \
   -v
 ```
