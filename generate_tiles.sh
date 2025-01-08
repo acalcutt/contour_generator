@@ -3,11 +3,11 @@
 # Default Values
 verbose_default=false
 increment_default=0
-sMaxZoom_default=8
-sEncoding_default="mapbox"
-oMaxZoom_default=8
-oMinZoom_default=5
-oDir_default="./output"
+sourceMaxZoom_default=8
+encoding_default="mapbox"
+outputMaxZoom_default=8
+outputMinZoom_default=5
+outputDir_default="./output"
 processes_default=8
 
 # Function to output usage information
@@ -20,31 +20,31 @@ usage_message() {
 	echo "  bbox       generates a list of parent tiles that cover a bounding box, then runs pyramid on each of them in parallel" >&2
 	echo "" >&2
 	echo "General Options" >&2
-	echo "  --demUrl <string>     The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)" >&2
-	echo "  --sEncoding <string>  The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: ${sEncoding_default})" >&2
-	echo "  --sMaxZoom <number>   The maximum zoom level of the source DEM. (default: ${sMaxZoom_default})" >&2
-	echo "  --increment <number>  The contour increment value to extract. Use 0 for default thresholds." >&2
-	echo "  --oMaxZoom <number>   The maximum zoom level of the output tile pyramid. (default: ${oMaxZoom_default})" >&2
-	echo "  --oDir <string>       The output directory where tiles will be stored. (default: ${oDir_default})" >&2
-	echo "  --processes <number>  The number of parallel processes to use. (default: ${processes_default})" >&2
+	echo "  --demUrl <string>          The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)" >&2
+	echo "  --encoding <string>        The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: ${encoding_default})" >&2
+	echo "  --sourceMaxZoom <number>   The maximum zoom level of the source DEM. (default: ${sourceMaxZoom_default})" >&2
+	echo "  --increment <number>       The contour increment value to extract. Use 0 for default thresholds." >&2
+	echo "  --outputMaxZoom <number>   The maximum zoom level of the output tile pyramid. (default: ${outputMaxZoom_default})" >&2
+	echo "  --outputDir <string>       The output directory where tiles will be stored. (default: ${outputDir_default})" >&2
+	echo "  --processes <number>       The number of parallel processes to use. (default: ${processes_default})" >&2
 	echo "" >&2
 	echo "Additional Required Options for 'pyramid':" >&2
-	echo "  --x <number>          The X coordinate of the parent tile." >&2
-	echo "  --y <number>          The Y coordinate of the parent tile." >&2
-	echo "  --z <number>          The Z coordinate of the parent tile." >&2
+	echo "  --x <number>               The X coordinate of the parent tile." >&2
+	echo "  --y <number>               The Y coordinate of the parent tile." >&2
+	echo "  --z <number>               The Z coordinate of the parent tile." >&2
 	echo "" >&2
 	echo "Additional Required Options for 'zoom':" >&2
-	echo "  --oMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: ${oMinZoom_default})" >&2
+	echo "  --outputMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: ${outputMinZoom_default})" >&2
 	echo "" >&2
 	echo "Additional Required Options for 'bbox':" >&2
-	echo "  --minx <number>       The minimum X coordinate of the bounding box." >&2
-	echo "  --miny <number>       The minimum Y coordinate of the bounding box." >&2
-	echo "  --maxx <number>       The maximum X coordinate of the bounding box." >&2
-	echo "  --maxy <number>       The maximum Y coordinate of the bounding box." >&2
-	echo "  --oMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: ${oMinZoom_default})" >&2
+	echo "  --minx <number>            The minimum X coordinate of the bounding box." >&2
+	echo "  --miny <number>            The minimum Y coordinate of the bounding box." >&2
+	echo "  --maxx <number>            The maximum X coordinate of the bounding box." >&2
+	echo "  --maxy <number>            The maximum Y coordinate of the bounding box." >&2
+	echo "  --outputMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: ${outputMinZoom_default})" >&2
 	echo "" >&2
-	echo "  -v|--verbose          Enable verbose output" >&2
-	echo "  -h|--help             Show this usage statement" >&2
+	echo "  -v|--verbose               Enable verbose output" >&2
+	echo "  -h|--help                  Show this usage statement" >&2
 	echo "" >&2
 }
 
@@ -55,27 +55,27 @@ parse_args_function_pyramid() {
 	local y=""
 	local z=""
 	local demUrl=""
-	local sEncoding="${sEncoding_default}"
-	local sMaxZoom="${sMaxZoom_default}"
+	local encoding="${encoding_default}"
+	local sourceMaxZoom="${sourceMaxZoom_default}"
 	local increment=""
-	local oMaxZoom="${oMaxZoom_default}"
-	local oDir="${oDir_default}"
+	local outputMaxZoom="${outputMaxZoom_default}"
+	local outputDir="${outputDir_default}"
 	local processes="${processes_default}"
 
 	while [[ $# -gt 0 ]]; do
 		case "$1" in
-			--x)            x="$2"; shift 2 ;;
-			--y)            y="$2"; shift 2 ;;
-			--z)            z="$2"; shift 2 ;;
-			--demUrl)       demUrl="$2"; shift 2 ;;
-			--sEncoding)    sEncoding="$2"; shift 2 ;;
-			--sMaxZoom)     sMaxZoom="$2"; shift 2 ;;
-			--increment)    increment="$2"; shift 2 ;;
-			--oMaxZoom)     oMaxZoom="$2"; shift 2 ;;
-			--oDir)         oDir="$2"; shift 2 ;;
-			--processes)    processes="$2"; shift 2 ;;
-			-v | --verbose) verbose=true; shift ;;
-			-h | --help)    usage_message; exit 1 ;;
+			--x)              x="$2"; shift 2 ;;
+			--y)              y="$2"; shift 2 ;;
+			--z)              z="$2"; shift 2 ;;
+			--demUrl)         demUrl="$2"; shift 2 ;;
+			--encoding)       encoding="$2"; shift 2 ;;
+			--sourceMaxZoom)  sourceMaxZoom="$2"; shift 2 ;;
+			--increment)      increment="$2"; shift 2 ;;
+			--outputMaxZoom)  outputMaxZoom="$2"; shift 2 ;;
+			--outputDir)      outputDir="$2"; shift 2 ;;
+			--processes)      processes="$2"; shift 2 ;;
+			-v | --verbose)   verbose=true; shift ;;
+			-h | --help)      usage_message; exit 1 ;;
 			*)
 				echo "Unknown option: $1" >&2
 				usage_message
@@ -91,41 +91,41 @@ parse_args_function_pyramid() {
 		exit 1
 	fi
 
-	# check for valid sEncoding
-	if [[ "${sEncoding}" != "mapbox" && "${sEncoding}" != "terrarium" ]]; then
+	# check for valid encoding
+	if [[ "${encoding}" != "mapbox" && "${encoding}" != "terrarium" ]]; then
 		usage_message
-		echo "Error: --sEncoding must be either 'mapbox' or 'terrarium'." >&2
+		echo "Error: --encoding must be either 'mapbox' or 'terrarium'." >&2
 		exit 1 # Return non-zero on error
 	fi
 
-	echo "${x} ${y} ${z} ${demUrl} ${sEncoding} ${sMaxZoom} ${increment} ${oMaxZoom} ${oDir} ${verbose} ${processes}"
+	echo "${x} ${y} ${z} ${demUrl} ${encoding} ${sourceMaxZoom} ${increment} ${outputMaxZoom} ${outputDir} ${verbose} ${processes}"
 	return 0
 }
 
 # Function to parse command line arguments for the 'zoom' function
 parse_args_function_zoom() {
 	local demUrl=""
-	local sEncoding="${sEncoding_default}"
-	local sMaxZoom="${sMaxZoom_default}"
+	local encoding="${encoding_default}"
+	local sourceMaxZoom="${sourceMaxZoom_default}"
 	local increment="${increment_default}"
-	local oMinZoom="${oMinZoom_default}"
-	local oMaxZoom="${oMaxZoom_default}"
-	local oDir="${oDir_default}"
+	local outputMinZoom="${outputMinZoom_default}"
+	local outputMaxZoom="${outputMaxZoom_default}"
+	local outputDir="${outputDir_default}"
 	local processes="${processes_default}"
 	local verbose="${verbose_default}"
 
 	while [[ $# -gt 0 ]]; do
 		case "$1" in
-			--demUrl)       demUrl="$2"; shift 2 ;;
-			--sEncoding)    sEncoding="$2"; shift 2 ;;
-			--sMaxZoom)     sMaxZoom="$2"; shift 2 ;;
-			--increment)    increment="$2"; shift 2 ;;
-			--oMinZoom)     oMinZoom="$2"; shift 2 ;;
-			--oMaxZoom)     oMaxZoom="$2"; shift 2 ;;
-			--oDir)         oDir="$2"; shift 2 ;;
-			--processes)    processes="$2"; shift 2 ;;
-			-v | --verbose) verbose=true; shift ;;
-			-h | --help)    usage_message; exit 1 ;; # Show usage and exit
+			--demUrl)         demUrl="$2"; shift 2 ;;
+			--encoding)       encoding="$2"; shift 2 ;;
+			--sourceMaxZoom)  sourceMaxZoom="$2"; shift 2 ;;
+			--increment)      increment="$2"; shift 2 ;;
+			--outputMinZoom)  outputMinZoom="$2"; shift 2 ;;
+			--outputMaxZoom)  outputMaxZoom="$2"; shift 2 ;;
+			--outputDir)      outputDir="$2"; shift 2 ;;
+			--processes)      processes="$2"; shift 2 ;;
+			-v | --verbose)   verbose=true; shift ;;
+			-h | --help)      usage_message; exit 1 ;; # Show usage and exit
 			*)
 				echo "Unknown option: $1" >&2
 				usage_message
@@ -141,15 +141,15 @@ parse_args_function_zoom() {
 		exit 1 # Return non-zero on error
 	fi
 
-	# Check if sEncoding is valid
-	if [[ "${sEncoding}" != "mapbox" && "${sEncoding}" != "terrarium" ]]; then
+	# Check if encoding is valid
+	if [[ "${encoding}" != "mapbox" && "${encoding}" != "terrarium" ]]; then
 		usage_message
-		echo "Error: --sEncoding must be either 'mapbox' or 'terrarium'." >&2
+		echo "Error: --encoding must be either 'mapbox' or 'terrarium'." >&2
 		exit 1 # Return non-zero on error
 	fi
 
 	# Return the values as a single string
-	echo "${oMinZoom} ${demUrl} ${oDir} ${increment} ${sMaxZoom} ${sEncoding} ${oMaxZoom} ${verbose} ${processes}"
+	echo "${outputMinZoom} ${demUrl} ${outputDir} ${increment} ${sourceMaxZoom} ${encoding} ${outputMaxZoom} ${verbose} ${processes}"
 	return 0 # return zero for success
 }
 
@@ -160,31 +160,31 @@ parse_args_function_bbox() {
 	local maxx=""
 	local maxy=""
 	local demUrl=""
-	local sEncoding="${sEncoding_default}"
-	local sMaxZoom="${sMaxZoom_default}"
+	local encoding="${encoding_default}"
+	local sourceMaxZoom="${sourceMaxZoom_default}"
 	local increment="${increment_default}"
-	local oMinZoom="${oMinZoom_default}"
-	local oMaxZoom="${oMaxZoom_default}"
-	local oDir="${oDir_default}"
+	local outputMinZoom="${outputMinZoom_default}"
+	local outputMaxZoom="${outputMaxZoom_default}"
+	local outputDir="${outputDir_default}"
 	local verbose="${verbose_default}"
 	local processes="${processes_default}"
 
 	while [[ $# -gt 0 ]]; do
 			case "$1" in
-			--minx)         minx="$2"; shift 2 ;;
-			--miny)         miny="$2"; shift 2 ;;
-			--maxx)         maxx="$2"; shift 2 ;;
-			--maxy)         maxy="$2"; shift 2 ;;
-			--demUrl)       demUrl="$2"; shift 2 ;;
-			--sEncoding)    sEncoding="$2"; shift 2 ;;
-			--sMaxZoom)     sMaxZoom="$2"; shift 2 ;;
-			--increment)    increment="$2"; shift 2 ;;
-			--oMinZoom)     oMinZoom="$2"; shift 2 ;;
-			--oMaxZoom)     oMaxZoom="$2"; shift 2 ;;
-			--oDir)         oDir="$2"; shift 2 ;;
-			--processes)    processes="$2"; shift 2 ;;
-			-h | --help)    usage_message; exit 1 ;; # Show usage and exit
-			-v | --verbose) verbose=true; shift ;;
+			--minx)           minx="$2"; shift 2 ;;
+			--miny)           miny="$2"; shift 2 ;;
+			--maxx)           maxx="$2"; shift 2 ;;
+			--maxy)           maxy="$2"; shift 2 ;;
+			--demUrl)         demUrl="$2"; shift 2 ;;
+			--encoding)       encoding="$2"; shift 2 ;;
+			--sourceMaxZoom)  sourceMaxZoom="$2"; shift 2 ;;
+			--increment)      increment="$2"; shift 2 ;;
+			--outputMinZoom)  outputMinZoom="$2"; shift 2 ;;
+			--outputMaxZoom)  outputMaxZoom="$2"; shift 2 ;;
+			--outputDir)      outputDir="$2"; shift 2 ;;
+			--processes)      processes="$2"; shift 2 ;;
+			-h | --help)      usage_message; exit 1 ;; # Show usage and exit
+			-v | --verbose)   verbose=true; shift ;;
 			*)
 				echo "Unknown option: $1" >&2
 				usage_message
@@ -199,15 +199,15 @@ parse_args_function_bbox() {
 		exit 1
 	fi
 
-	# Check if sEncoding is valid
-	if [[ "${sEncoding}" != "mapbox" && "${sEncoding}" != "terrarium" ]]; then
+	# Check if encoding is valid
+	if [[ "${encoding}" != "mapbox" && "${encoding}" != "terrarium" ]]; then
 		usage_message
-		echo "Error: --sEncoding must be either 'mapbox' or 'terrarium'." >&2
+		echo "Error: --encoding must be either 'mapbox' or 'terrarium'." >&2
 		exit 1 # Return non-zero on error
 	fi
 
 	# Return the values as a single string
-	echo "${oMinZoom} ${demUrl} ${oDir} ${increment} ${sMaxZoom} ${sEncoding} ${oMaxZoom} ${verbose} ${processes} ${minx} ${miny} ${maxx} ${maxy}"
+	echo "${outputMinZoom} ${demUrl} ${outputDir} ${increment} ${sourceMaxZoom} ${encoding} ${outputMaxZoom} ${verbose} ${processes} ${minx} ${miny} ${maxx} ${maxy}"
 	return 0 # return zero for success
 }
 
@@ -218,10 +218,10 @@ process_tile() {
 	local x_coord="$2"
 	local y_coord="$3"
 
-	read -r oMinZoom demUrl oDir increment sMaxZoom sEncoding oMaxZoom verbose processes <<<"${programOptions}"
+	read -r outputMinZoom demUrl outputDir increment sourceMaxZoom encoding outputMaxZoom verbose processes <<<"${programOptions}"
 
 	if [[ "${verbose}" = "true" ]]; then
-		echo "process_tile: [START] Processing tile - Zoom: ${zoom_level}, X: ${x_coord}, Y: ${y_coord}, oMaxZoom: ${oMaxZoom}"
+		echo "process_tile: [START] Processing tile - Zoom: ${zoom_level}, X: ${x_coord}, Y: ${y_coord}, outputMaxZoom: ${outputMaxZoom}"
 	fi
 
 	npx tsx ./src/generate-countour-tile-pyramid.ts \
@@ -229,11 +229,11 @@ process_tile() {
 		--y "${y_coord}" \
 		--z "${zoom_level}" \
 		--demUrl "${demUrl}" \
-		--sEncoding "${sEncoding}" \
-		--sMaxZoom "${sMaxZoom}" \
+		--encoding "${encoding}" \
+		--sourceMaxZoom "${sourceMaxZoom}" \
 		--increment "${increment}" \
-		--oMaxZoom "${oMaxZoom}" \
-		--oDir "${oDir}"
+		--outputMaxZoom "${outputMaxZoom}" \
+		--outputDir "${outputDir}"
 
 	if [[ "${verbose}" = "true" ]]; then
 		echo "process_tile: [END] Finished processing ${zoom_level}-${x_coord}-${y_coord}"
@@ -276,41 +276,41 @@ export -f bbox_to_tiles
 # Function to run the 'pyramid' command.
 run_function_pyramid() {
 	local programOptions="$1"
-	read -r x y z demUrl sEncoding sMaxZoom increment oMaxZoom oDir verbose processes <<<"${programOptions}"
+	read -r x y z demUrl encoding sourceMaxZoom increment outputMaxZoom outputDir verbose processes <<<"${programOptions}"
 
 	if [[ "${verbose}" = "true" ]]; then
-		echo "process_tile: [START] Processing tile - Zoom: ${z}, X: ${x}, Y: ${y}, oMaxZoom: ${oMaxZoom}"
+		echo "process_tile: [START] Processing tile - Zoom: ${z}, X: ${x}, Y: ${y}, outputMaxZoom: ${outputMaxZoom}"
 	fi
 
-	npx tsx ./src/generate-countour-tile-pyramid.ts --x "${x}" --y "${y}" --z "${z}" --demUrl "${demUrl}" --sEncoding "${sEncoding}" --sMaxZoom "${sMaxZoom}" --increment "${increment}" --oMaxZoom "${oMaxZoom}" --oDir "${oDir}"
+	npx tsx ./src/generate-countour-tile-pyramid.ts --x "${x}" --y "${y}" --z "${z}" --demUrl "${demUrl}" --encoding "${encoding}" --sourceMaxZoom "${sourceMaxZoom}" --increment "${increment}" --outputMaxZoom "${outputMaxZoom}" --outputDir "${outputDir}"
 
 	if [[ "${verbose}" = "true" ]]; then
 		echo "process_tile: [END] Finished processing ${z}-${x}-${y}"
 	fi
 
-	create_metadata "${oDir}" "${z}" "${oMaxZoom}"
+	create_metadata "${outputDir}" "${z}" "${outputMaxZoom}"
 }
 
 # Function to run the 'zoom' command.
 run_function_zoom() {
 	local programOptions="$1"
-	read -r oMinZoom demUrl oDir increment sMaxZoom sEncoding oMaxZoom verbose processes <<<"${programOptions}"
+	read -r outputMinZoom demUrl outputDir increment sourceMaxZoom encoding outputMaxZoom verbose processes <<<"${programOptions}"
 
 	echo "Source File: ${demUrl}"
-	echo "Source Max Zoom: ${sMaxZoom}"
-	echo "Source Encoding: ${sEncoding}"
-	echo "Output Directory: ${oDir}"
-	echo "Output Min Zoom: ${oMinZoom}"
-	echo "Output Max Zoom: ${oMaxZoom}"
+	echo "Source Max Zoom: ${sourceMaxZoom}"
+	echo "Source Encoding: ${encoding}"
+	echo "Output Directory: ${outputDir}"
+	echo "Output Min Zoom: ${outputMinZoom}"
+	echo "Output Max Zoom: ${outputMaxZoom}"
 	echo "Contour Increment: ${increment}"
 	echo "Main: [START] Processing tiles."
 
 	# Capture the return value using a pipe.
-	tile_coords_str=$(generate_tile_coordinates "${oMinZoom}")
+	tile_coords_str=$(generate_tile_coordinates "${outputMinZoom}")
 
 	if [[ $? -eq 0 ]]; then
 		if [[ "${verbose}" = "true" ]]; then
-			echo "Main: [INFO] Starting tile processing for zoom level ${oMinZoom}"
+			echo "Main: [INFO] Starting tile processing for zoom level ${outputMinZoom}"
 		fi
 		#Ensure xargs only runs if it doesn't receive a signal
 		trap_return() {
@@ -322,32 +322,32 @@ run_function_zoom() {
 		trap trap_return INT TERM
 		echo "${tile_coords_str}" | xargs -P "${processes}" -n 3 bash -c 'process_tile "$1" "$2" "$3"' "${programOptions}"
 		if [[ "${verbose}" = "true" ]]; then
-			echo "Main: [INFO] Finished tile processing for zoom level ${oMinZoom}"
+			echo "Main: [INFO] Finished tile processing for zoom level ${outputMinZoom}"
 		fi
 	else
 		echo "Error generating tiles" >&2
 		exit 1
 	fi
 
-	echo "Main: [END] Finished processing all tiles at zoom level ${oMinZoom}."
-	create_metadata "${oDir}" "${oMinZoom}" "${oMaxZoom}"
+	echo "Main: [END] Finished processing all tiles at zoom level ${outputMinZoom}."
+	create_metadata "${outputDir}" "${outputMinZoom}" "${outputMaxZoom}"
 }
 
 # Function to run the 'bbox' command.
 run_function_bbox() {
 	local programOptions="$1"
-	read oMinZoom demUrl oDir increment sMaxZoom sEncoding oMaxZoom verbose processes minx miny maxx maxy <<<"${programOptions}"
+	read outputMinZoom demUrl outputDir increment sourceMaxZoom encoding outputMaxZoom verbose processes minx miny maxx maxy <<<"${programOptions}"
 
 	echo "Source File: ${demUrl}"
-	echo "Source Max Zoom: ${sMaxZoom}"
-	echo "Source Encoding: ${sEncoding}"
-	echo "Output Directory: ${oDir}"
-	echo "Output Min Zoom: ${oMinZoom}"
-	echo "Output Max Zoom: ${oMaxZoom}"
+	echo "Source Max Zoom: ${sourceMaxZoom}"
+	echo "Source Encoding: ${encoding}"
+	echo "Output Directory: ${outputDir}"
+	echo "Output Min Zoom: ${outputMinZoom}"
+	echo "Output Max Zoom: ${outputMaxZoom}"
 	echo "Contour Increment: ${increment}"
 	echo "Main: [START] Processing tiles."
 
-	tile_coords_str=$(bbox_to_tiles "${minx}" "${miny}" "${maxx}" "${maxy}" "${oMinZoom}")
+	tile_coords_str=$(bbox_to_tiles "${minx}" "${miny}" "${maxx}" "${maxy}" "${outputMinZoom}")
 
 	if [[ $? -eq 0 ]]; then
 		if [[ "${verbose}" = "true" ]]; then
@@ -371,17 +371,17 @@ run_function_bbox() {
 	fi
 
 	echo "Main: [END] Finished processing all tiles in bounding box."
-	create_metadata "${oDir}" "${oMinZoom}" "${oMaxZoom}"
+	create_metadata "${outputDir}" "${outputMinZoom}" "${outputMaxZoom}"
 }
 
 # Function to create the metadata.json file
 create_metadata() {
 	local outputDir="$1"
-	local oMinZoom="$2"
-	local oMaxZoom="$3"
+	local outputMinZoom="$2"
+	local outputMaxZoom="$3"
 
 	local metadata_file="${outputDir}/metadata.json"
-	local metadata_name="Contour_z${oMinZoom}_Z${oMaxZoom}"
+	local metadata_name="Contour_z${outputMinZoom}_Z${outputMaxZoom}"
 	local description
 	description=$(date +"%Y-%m-%d %H:%M:%S")
 
@@ -391,9 +391,9 @@ create_metadata() {
 	"description": "'"${description}"'",
 	"version": "1",
 	"format": "pbf",
-	"minzoom": "'"${oMinZoom}"'",
-	"maxzoom": "'"${oMaxZoom}"'",
-	"json": "{\"vector_layers\":[{\"id\":\"contours\",\"fields\":{\"ele\":\"Number\",\"level\":\"Number\"},\"minzoom\":'"${oMinZoom}"',\"maxzoom\":'"${oMaxZoom}"'}]}",
+	"minzoom": "'"${outputMinZoom}"'",
+	"maxzoom": "'"${outputMaxZoom}"'",
+	"json": "{\"vector_layers\":[{\"id\":\"contours\",\"fields\":{\"ele\":\"Number\",\"level\":\"Number\"},\"minzoom\":'"${outputMinZoom}"',\"maxzoom\":'"${outputMaxZoom}"'}]}",
 	"bounds": "-180.000000,-85.051129,180.000000,85.051129"
 }'
 
