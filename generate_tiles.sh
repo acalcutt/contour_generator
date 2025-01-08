@@ -49,7 +49,7 @@ usage_message() {
 }
 
 # Function to parse command line arguments for the 'pyramid' function
-parse_arguments_function_pyramid() {
+parse_args_function_pyramid() {
 	local verbose="${verbose_default}"
 	local x=""
 	local y=""
@@ -139,7 +139,7 @@ parse_arguments_function_pyramid() {
 }
 
 # Function to parse command line arguments for the 'zoom' function
-parse_arguments_function_zoom() {
+parse_args_function_zoom() {
 	local verbose="${verbose_default}"
 	local demUrl=""
 	local oDir="${oDir_default}"
@@ -220,7 +220,7 @@ parse_arguments_function_zoom() {
 }
 
 # Function to parse command line arguments for the 'bbox' function
-parse_arguments_function_bbox() {
+parse_args_function_bbox() {
 	local minx=""
 	local miny=""
 	local maxx=""
@@ -524,7 +524,7 @@ trap 'kill $(jobs -p); exit 1' INT TERM
 
 case "${function}" in
 "pyramid")
-	programOptions=$(parse_arguments_function_pyramid "$@")
+	programOptions=$(parse_args_function_pyramid "$@")
 	ret="$?" # capture exit status
 	if [[ "${ret}" -ne 0 ]]; then
 		# Error message will already be handled above
@@ -533,7 +533,7 @@ case "${function}" in
 	run_function_pyramid "${programOptions}"
 	;;
 "zoom")
-	programOptions=$(parse_arguments_function_zoom "$@")
+	programOptions=$(parse_args_function_zoom "$@")
 	ret="$?" # capture exit status
 	if [[ "${ret}" -ne 0 ]]; then
 		# Error message will already be handled above
@@ -542,7 +542,7 @@ case "${function}" in
 	run_function_zoom "${programOptions}"
 	;;
 "bbox")
-	programOptions=$(parse_arguments_function_bbox "$@")
+	programOptions=$(parse_args_function_bbox "$@")
 	ret="$?" # capture exit status
 	if [[ "${ret}" -ne 0 ]]; then
 		# Error message will already be handled above
