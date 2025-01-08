@@ -16,16 +16,16 @@ usage_message() {
 	echo "" >&2
 	echo "Functions:" >&2
 	echo " pyramid   generates contours for a parent tile and all child tiles up to a specified max zoom level." >&2
-	echo " zoom      generates a list of parent tiles at a specifed zoom level, then runs pyramid on each of them in parallel" >&2
-	echo " bbox      generates a list of parent tiles that cover a bounding box, then runs pyramid on each of them in parallel" >&2
+	echo " zoom	  generates a list of parent tiles at a specifed zoom level, then runs pyramid on each of them in parallel" >&2
+	echo " bbox	  generates a list of parent tiles that cover a bounding box, then runs pyramid on each of them in parallel" >&2
 	echo "" >&2
 	echo " General Options" >&2
-	echo "  --demUrl <string>    The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)" >&2
+	echo "  --demUrl <string>	The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)" >&2
 	echo "  --sEncoding <string> The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: ${sEncoding_default})" >&2
 	echo "  --sMaxZoom <number>  The maximum zoom level of the source DEM. (default: ${sMaxZoom_default})" >&2
 	echo "  --increment <number> The contour increment value to extract. Use 0 for default thresholds." >&2
 	echo "  --oMaxZoom <number>  The maximum zoom level of the output tile pyramid. (default: ${oMaxZoom_default})" >&2
-	echo "  --oDir <string>      The output directory where tiles will be stored. (default: ${oDir_default})" >&2
+	echo "  --oDir <string>	  The output directory where tiles will be stored. (default: ${oDir_default})" >&2
 	echo "  --processes <number> The number of parallel processes to use. (default: ${processes_default})" >&2
 	echo "" >&2
 	echo " Additional Required Options for 'pyramid':" >&2
@@ -64,59 +64,23 @@ parse_args_function_pyramid() {
 
 	while [[ $# -gt 0 ]]; do
 		case "$1" in
-		--x)
-			x="$2"
-			shift 2
-			;;
-		--y)
-			y="$2"
-			shift 2
-			;;
-		--z)
-			z="$2"
-			shift 2
-			;;
-		--demUrl)
-			demUrl="$2"
-			shift 2
-			;;
-		--sEncoding)
-			sEncoding="$2"
-			shift 2
-			;;
-		--sMaxZoom)
-			sMaxZoom="$2"
-			shift 2
-			;;
-		--increment)
-			increment="$2"
-			shift 2
-			;;
-		--oMaxZoom)
-			oMaxZoom="$2"
-			shift 2
-			;;
-		--oDir)
-			oDir="$2"
-			shift 2
-			;;
-		--processes)
-			processes="$2"
-			shift 2
-			;;
-		-h | --help)
-			usage_message
-			exit 1
-			;;
-		-v | --verbose)
-			verbose=true
-			shift
-			;;
-		*)
-			echo "Unknown option: $1" >&2
-			usage_message
-			exit 1
-			;;
+			--x)            x="$2"; shift 2 ;;
+			--y)            y="$2"; shift 2 ;;
+			--z)            z="$2"; shift 2 ;;
+			--demUrl)       demUrl="$2"; shift 2 ;;
+			--sEncoding)    sEncoding="$2"; shift 2 ;;
+			--sMaxZoom)     sMaxZoom="$2"; shift 2 ;;
+			--increment)    increment="$2"; shift 2 ;;
+			--oMaxZoom)     oMaxZoom="$2"; shift 2 ;;
+			--oDir)         oDir="$2"; shift 2 ;;
+			--processes)    processes="$2"; shift 2 ;;
+			-v | --verbose) verbose=true; shift ;;
+			-h | --help)    usage_message; exit 1 ;;
+			*)
+				echo "Unknown option: $1" >&2
+				usage_message
+				exit 1
+				;;
 		esac
 	done
 
@@ -140,63 +104,33 @@ parse_args_function_pyramid() {
 
 # Function to parse command line arguments for the 'zoom' function
 parse_args_function_zoom() {
-	local verbose="${verbose_default}"
 	local demUrl=""
-	local oDir="${oDir_default}"
-	local increment="${increment_default}"
-	local sMaxZoom="${sMaxZoom_default}"
 	local sEncoding="${sEncoding_default}"
-	local oMaxZoom="${oMaxZoom_default}"
+	local sMaxZoom="${sMaxZoom_default}"
+	local increment="${increment_default}"
 	local oMinZoom="${oMinZoom_default}"
+	local oMaxZoom="${oMaxZoom_default}"
+	local oDir="${oDir_default}"
 	local processes="${processes_default}"
+	local verbose="${verbose_default}"
 
 	while [[ $# -gt 0 ]]; do
 		case "$1" in
-		-h | --help)
-			usage_message
-			exit 1
-			;; # Show usage and exit
-		--increment)
-			increment="$2"
-			shift 2
-			;;
-		--sMaxZoom)
-			sMaxZoom="$2"
-			shift 2
-			;;
-		--sEncoding)
-			sEncoding="$2"
-			shift 2
-			;;
-		--demUrl)
-			demUrl="$2"
-			shift 2
-			;;
-		--oDir)
-			oDir="$2"
-			shift 2
-			;;
-		--oMaxZoom)
-			oMaxZoom="$2"
-			shift 2
-			;;
-		--oMinZoom)
-			oMinZoom="$2"
-			shift 2
-			;;
-		--processes)
-			processes="$2"
-			shift 2
-			;;
-		-v | --verbose)
-			verbose=true
-			shift
-			;;
-		*)
-			echo "Unknown option: $1" >&2
-			usage_message
-			exit 1
-			;; # Return non-zero on error
+			--demUrl)       demUrl="$2"; shift 2 ;;
+			--sEncoding)    sEncoding="$2"; shift 2 ;;
+			--sMaxZoom)     sMaxZoom="$2"; shift 2 ;;
+			--increment)    increment="$2"; shift 2 ;;
+			--oMinZoom)     oMinZoom="$2"; shift 2 ;;
+			--oMaxZoom)     oMaxZoom="$2"; shift 2 ;;
+			--oDir)         oDir="$2"; shift 2 ;;
+			--processes)    processes="$2"; shift 2 ;;
+			-v | --verbose) verbose=true; shift ;;
+			-h | --help)    usage_message; exit 1 ;; # Show usage and exit
+			*)
+				echo "Unknown option: $1" >&2
+				usage_message
+				exit 1
+				;; # Return non-zero on error
 		esac
 	done
 
@@ -236,68 +170,26 @@ parse_args_function_bbox() {
 	local processes="${processes_default}"
 
 	while [[ $# -gt 0 ]]; do
-		case "$1" in
-		--minx)
-			minx="$2"
-			shift 2
-			;;
-		--miny)
-			miny="$2"
-			shift 2
-			;;
-		--maxx)
-			maxx="$2"
-			shift 2
-			;;
-		--maxy)
-			maxy="$2"
-			shift 2
-			;;
-		--demUrl)
-			demUrl="$2"
-			shift 2
-			;;
-		--sMaxZoom)
-			sMaxZoom="$2"
-			shift 2
-			;;
-		--sEncoding)
-			sEncoding="$2"
-			shift 2
-			;;
-		--increment)
-			increment="$2"
-			shift 2
-			;;
-		--oMaxZoom)
-			oMaxZoom="$2"
-			shift 2
-			;;
-		--oMinZoom)
-			oMinZoom="$2"
-			shift 2
-			;;
-		--oDir)
-			oDir="$2"
-			shift 2
-			;;
-		--processes)
-			processes="$2"
-			shift 2
-			;;
-		-h | --help)
-			usage_message
-			exit 1
-			;; # Show usage and exit
-		-v | --verbose)
-			verbose=true
-			shift
-			;;
-		*)
-			echo "Unknown option: $1" >&2
-			usage_message
-			exit 1
-			;; # Return non-zero on error
+			case "$1" in
+			--minx)         minx="$2"; shift 2 ;;
+			--miny)         miny="$2"; shift 2 ;;
+			--maxx)         maxx="$2"; shift 2 ;;
+			--maxy)         maxy="$2"; shift 2 ;;
+			--demUrl)       demUrl="$2"; shift 2 ;;
+			--sEncoding)    sEncoding="$2"; shift 2 ;;
+			--sMaxZoom)     sMaxZoom="$2"; shift 2 ;;
+			--increment)    increment="$2"; shift 2 ;;
+			--oMinZoom)     oMinZoom="$2"; shift 2 ;;
+			--oMaxZoom)     oMaxZoom="$2"; shift 2 ;;
+			--oDir)         oDir="$2"; shift 2 ;;
+			--processes)    processes="$2"; shift 2 ;;
+			-h | --help)    usage_message; exit 1 ;; # Show usage and exit
+			-v | --verbose) verbose=true; shift ;;
+			*)
+				echo "Unknown option: $1" >&2
+				usage_message
+				exit 1
+				;; # Return non-zero on error
 		esac
 	done
 
@@ -494,15 +386,15 @@ create_metadata() {
 	description=$(date +"%Y-%m-%d %H:%M:%S")
 
 	local json_content='{
-    "name": "'"${metadata_name}"'",
-    "type": "baselayer",
-    "description": "'"${description}"'",
-    "version": "1",
-    "format": "pbf",
-    "minzoom": "'"${oMinZoom}"'",
-    "maxzoom": "'"${oMaxZoom}"'",
-    "json": "{\"vector_layers\":[{\"id\":\"contours\",\"fields\":{\"ele\":\"Number\",\"level\":\"Number\"},\"minzoom\":'"${oMinZoom}"',\"maxzoom\":'"${oMaxZoom}"'}]}",
-    "bounds": "-180.000000,-85.051129,180.000000,85.051129"
+	"name": "'"${metadata_name}"'",
+	"type": "baselayer",
+	"description": "'"${description}"'",
+	"version": "1",
+	"format": "pbf",
+	"minzoom": "'"${oMinZoom}"'",
+	"maxzoom": "'"${oMaxZoom}"'",
+	"json": "{\"vector_layers\":[{\"id\":\"contours\",\"fields\":{\"ele\":\"Number\",\"level\":\"Number\"},\"minzoom\":'"${oMinZoom}"',\"maxzoom\":'"${oMaxZoom}"'}]}",
+	"bounds": "-180.000000,-85.051129,180.000000,85.051129"
 }'
 
 	echo "${json_content}" >"${metadata_file}"
