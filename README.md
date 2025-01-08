@@ -4,6 +4,44 @@ Generates contour tiles in Mapbox Vector Tile (MVT) format from terrain raster-d
 
 This script outputs tile files in the ```<outputDir>/z/x/y.pbf``` format and generates a ```<outputDir>/metadata.json``` file. These files can be imported using [mbutil](https://github.com/mapbox/mbutil). For example, to import the tiles into an mbtiles file using mbutil, the syntax would be: ```python3 mb-util --image_format=pbf <outputDir> output.mbtiles```.
 
+# Script Parameters
+generate_tiles.sh - Generates contour tiles based on specified function and parameters.
+```
+Usage: ./generate_tiles.sh <function> [options]
+
+Functions:
+  pyramid    generates contours for a parent tile and all child tiles up to a specified max zoom level.
+  zoom       generates a list of parent tiles at a specifed zoom level, then runs pyramid on each of them in parallel
+  bbox       generates a list of parent tiles that cover a bounding box, then runs pyramid on each of them in parallel
+
+General Options
+  --demUrl <string>          The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)
+  --encoding <string>        The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: mapbox)
+  --sourceMaxZoom <number>   The maximum zoom level of the source DEM. (default: 8)
+  --increment <number>       The contour increment value to extract. Use 0 for default thresholds.
+  --outputMaxZoom <number>   The maximum zoom level of the output tile pyramid. (default: 8)
+  --outputDir <string>       The output directory where tiles will be stored. (default: ./output)
+  --processes <number>       The number of parallel processes to use. (default: 8)
+
+Additional Required Options for 'pyramid':
+  --x <number>               The X coordinate of the parent tile.
+  --y <number>               The Y coordinate of the parent tile.
+  --z <number>               The Z coordinate of the parent tile.
+
+Additional Required Options for 'zoom':
+  --outputMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: 5)
+
+Additional Required Options for 'bbox':
+  --minx <number>            The minimum X coordinate of the bounding box.
+  --miny <number>            The minimum Y coordinate of the bounding box.
+  --maxx <number>            The maximum X coordinate of the bounding box.
+  --maxy <number>            The maximum Y coordinate of the bounding box.
+  --outputMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: 5)
+
+  -v|--verbose               Enable verbose output
+  -h|--help                  Show this usage statement
+```
+
 # Use with Docker
 This image is published to Docker Hub as [wifidb/contour-generator](https://hub.docker.com/r/wifidb/contour-generator).
 
@@ -25,6 +63,8 @@ pyramid function (using Docker w/pmtiles https source):
     --outputDir "/data/output_pyramid" \
     --outputMaxZoom 15 \
     -v
+  
+  #View Area #9/47.2542/11.5426
 ```
 
 zoom function (using Docker w/pmtiles local source):
@@ -67,50 +107,13 @@ Important Notes:
 
 The -v ```$(pwd):/data``` part of the docker run command maps your local working directory ```$(pwd)``` to ```/data``` inside the Docker container. Therefore, your DEM file must be located in the ```/data``` directory inside of the docker image, and the output directory must also be in the ```/data``` directory.
 
-# Install
+# Install Locally on linux
 ```
 apt-get install bc #Required for bash math functions
 npm install
 ```
 
-# Script
-generate_tiles.sh - Generates contour tiles based on specified function and parameters.
-```
-Usage: ./generate_tiles.sh <function> [options]
-
-Functions:
-  pyramid    generates contours for a parent tile and all child tiles up to a specified max zoom level.
-  zoom       generates a list of parent tiles at a specifed zoom level, then runs pyramid on each of them in parallel
-  bbox       generates a list of parent tiles that cover a bounding box, then runs pyramid on each of them in parallel
-
-General Options
-  --demUrl <string>          The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)
-  --encoding <string>        The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: mapbox)
-  --sourceMaxZoom <number>   The maximum zoom level of the source DEM. (default: 8)
-  --increment <number>       The contour increment value to extract. Use 0 for default thresholds.
-  --outputMaxZoom <number>   The maximum zoom level of the output tile pyramid. (default: 8)
-  --outputDir <string>       The output directory where tiles will be stored. (default: ./output)
-  --processes <number>       The number of parallel processes to use. (default: 8)
-
-Additional Required Options for 'pyramid':
-  --x <number>               The X coordinate of the parent tile.
-  --y <number>               The Y coordinate of the parent tile.
-  --z <number>               The Z coordinate of the parent tile.
-
-Additional Required Options for 'zoom':
-  --outputMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: 5)
-
-Additional Required Options for 'bbox':
-  --minx <number>            The minimum X coordinate of the bounding box.
-  --miny <number>            The minimum Y coordinate of the bounding box.
-  --maxx <number>            The maximum X coordinate of the bounding box.
-  --maxy <number>            The maximum Y coordinate of the bounding box.
-  --outputMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: 5)
-
-  -v|--verbose               Enable verbose output
-  -h|--help                  Show this usage statement
-```
-Usage Examples:
+# Local Examples:
 
 pyramid function (Run Locally w/zxyPattern source):
 ```
@@ -125,6 +128,8 @@ pyramid function (Run Locally w/zxyPattern source):
   --outputDir "./output_pyramid" \
   --outputMaxZoom 15 \
   -v
+
+  #View Area #9/47.2542/11.5426
 ```
 
 zoom function (Run Locally w/pmtiles local source):
@@ -142,6 +147,8 @@ wget https://github.com/acalcutt/contour_generator/releases/download/test_data/J
   --increment 100 \
   --processes 8 \
   -v
+
+  # Note: some "No tile returned for" messages are normal with this JAXA dataset since there are areas without tiles
 ```
 
 bbox function (Run Locally w/pmtiles https source):
@@ -159,4 +166,9 @@ bbox function (Run Locally w/pmtiles https source):
   --outputMaxZoom 10 \
   --outputDir "./output_bbox" \
   -v
+  #View Area #5/44.96/-73.35
 ```
+
+# Test Data License Inforamtion
+AWS mapzen terrarium tiles: https://registry.opendata.aws/terrain-tiles/
+JAXA AW3D30: https://earth.jaxa.jp/en/data/policy/ 
