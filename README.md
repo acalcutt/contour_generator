@@ -64,7 +64,7 @@ pyramid function (using Docker w/pmtiles https source):
     --outputMaxZoom 15 \
     -v
   
-  #View Area #9/47.2542/11.5426
+  # Test View Area #9/47.2542/11.5426
 ```
 
 zoom function (using Docker w/pmtiles local source):
@@ -83,6 +83,9 @@ docker run -it -v $(pwd):/data wifidb/contour-generator \
     --increment 100 \
     --processes 8 \
     -v
+  
+# Test View Area #5/47.25/11.54
+# Note: some "No tile returned for" messages are normal with this JAXA dataset since there are areas without tiles
 ```
 
 bbox function (using Docker w/zxyPattern source):
@@ -101,6 +104,8 @@ docker run -it -v $(pwd):/data wifidb/contour-generator \
     --outputMaxZoom 10 \
     --outputDir "/data/output_bbox" \
     -v
+
+# Test View Area #5/44.96/-73.35
 ```
 
 Important Notes:
@@ -129,7 +134,7 @@ pyramid function (Run Locally w/zxyPattern source):
   --outputMaxZoom 15 \
   -v
 
-  #View Area #9/47.2542/11.5426
+  #Test View Area #9/47.2542/11.5426
 ```
 
 zoom function (Run Locally w/pmtiles local source):
@@ -148,6 +153,7 @@ wget https://github.com/acalcutt/contour_generator/releases/download/test_data/J
   --processes 8 \
   -v
 
+  # Test View Area #5/47.25/11.54 
   # Note: some "No tile returned for" messages are normal with this JAXA dataset since there are areas without tiles
 ```
 
@@ -166,7 +172,8 @@ bbox function (Run Locally w/pmtiles https source):
   --outputMaxZoom 10 \
   --outputDir "./output_bbox" \
   -v
-  #View Area #5/44.96/-73.35
+
+  # Test View Area #5/44.96/-73.35
 ```
 
 # Test Data License Inforamtion
