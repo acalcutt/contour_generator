@@ -15,36 +15,36 @@ usage_message() {
 	echo "Usage: $0 <function> [options]" >&2
 	echo "" >&2
 	echo "Functions:" >&2
-	echo " pyramid   generates contours for a parent tile and all child tiles up to a specified max zoom level." >&2
-	echo " zoom	  generates a list of parent tiles at a specifed zoom level, then runs pyramid on each of them in parallel" >&2
-	echo " bbox	  generates a list of parent tiles that cover a bounding box, then runs pyramid on each of them in parallel" >&2
+	echo "  pyramid    generates contours for a parent tile and all child tiles up to a specified max zoom level." >&2
+	echo "  zoom       generates a list of parent tiles at a specifed zoom level, then runs pyramid on each of them in parallel" >&2
+	echo "  bbox       generates a list of parent tiles that cover a bounding box, then runs pyramid on each of them in parallel" >&2
 	echo "" >&2
-	echo " General Options" >&2
-	echo "  --demUrl <string>	The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)" >&2
-	echo "  --sEncoding <string> The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: ${sEncoding_default})" >&2
-	echo "  --sMaxZoom <number>  The maximum zoom level of the source DEM. (default: ${sMaxZoom_default})" >&2
-	echo "  --increment <number> The contour increment value to extract. Use 0 for default thresholds." >&2
-	echo "  --oMaxZoom <number>  The maximum zoom level of the output tile pyramid. (default: ${oMaxZoom_default})" >&2
-	echo "  --oDir <string>	  The output directory where tiles will be stored. (default: ${oDir_default})" >&2
-	echo "  --processes <number> The number of parallel processes to use. (default: ${processes_default})" >&2
+	echo "General Options" >&2
+	echo "  --demUrl <string>     The URL of the DEM source. (pmtiles://<http or local file path> or https://<zxyPattern>)" >&2
+	echo "  --sEncoding <string>  The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox'). (default: ${sEncoding_default})" >&2
+	echo "  --sMaxZoom <number>   The maximum zoom level of the source DEM. (default: ${sMaxZoom_default})" >&2
+	echo "  --increment <number>  The contour increment value to extract. Use 0 for default thresholds." >&2
+	echo "  --oMaxZoom <number>   The maximum zoom level of the output tile pyramid. (default: ${oMaxZoom_default})" >&2
+	echo "  --oDir <string>       The output directory where tiles will be stored. (default: ${oDir_default})" >&2
+	echo "  --processes <number>  The number of parallel processes to use. (default: ${processes_default})" >&2
 	echo "" >&2
-	echo " Additional Required Options for 'pyramid':" >&2
-	echo "  --x <number>   The X coordinate of the parent tile." >&2
-	echo "  --y <number>   The Y coordinate of the parent tile." >&2
-	echo "  --z <number>   The Z coordinate of the parent tile." >&2
+	echo "Additional Required Options for 'pyramid':" >&2
+	echo "  --x <number>          The X coordinate of the parent tile." >&2
+	echo "  --y <number>          The Y coordinate of the parent tile." >&2
+	echo "  --z <number>          The Z coordinate of the parent tile." >&2
 	echo "" >&2
-	echo " Additional Required Options for 'zoom':" >&2
-	echo "  --oMinZoom <number>  The minimum zoom level of the output tile pyramid. (default: ${oMinZoom_default})" >&2
+	echo "Additional Required Options for 'zoom':" >&2
+	echo "  --oMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: ${oMinZoom_default})" >&2
 	echo "" >&2
-	echo " Additional Required Options for 'bbox':" >&2
-	echo "  --minx <number>  The minimum X coordinate of the bounding box." >&2
-	echo "  --miny <number>  The minimum Y coordinate of the bounding box." >&2
-	echo "  --maxx <number>  The maximum X coordinate of the bounding box." >&2
-	echo "  --maxy <number>  The maximum Y coordinate of the bounding box." >&2
-	echo "  --oMinZoom <number>  The minimum zoom level of the output tile pyramid. (default: ${oMinZoom_default})" >&2
+	echo "Additional Required Options for 'bbox':" >&2
+	echo "  --minx <number>       The minimum X coordinate of the bounding box." >&2
+	echo "  --miny <number>       The minimum Y coordinate of the bounding box." >&2
+	echo "  --maxx <number>       The maximum X coordinate of the bounding box." >&2
+	echo "  --maxy <number>       The maximum Y coordinate of the bounding box." >&2
+	echo "  --oMinZoom <number>   The minimum zoom level of the output tile pyramid. (default: ${oMinZoom_default})" >&2
 	echo "" >&2
-	echo "  -v|--verbose  Enable verbose output" >&2
-	echo "  -h|--help Show this usage statement" >&2
+	echo "  -v|--verbose          Enable verbose output" >&2
+	echo "  -h|--help             Show this usage statement" >&2
 	echo "" >&2
 }
 
