@@ -79,7 +79,7 @@ docker run -it -v $(pwd):/data wifidb/contour-generator \
     --sourceMaxZoom 7 \
     --encoding mapbox \
     --outputMinZoom 5 \
-    --outputMaxZoom 8 \
+    --outputMaxZoom 7 \
     --increment 100 \
     --processes 8 \
     -v
@@ -148,7 +148,7 @@ wget https://github.com/acalcutt/contour_generator/releases/download/test_data/J
   --sourceMaxZoom 7 \
   --encoding mapbox \
   --outputMinZoom 5 \
-  --outputMaxZoom 8 \
+  --outputMaxZoom 7 \
   --increment 100 \
   --processes 8 \
   -v
