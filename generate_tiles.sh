@@ -49,7 +49,7 @@ usage_message() {
 }
 
 # Function to parse command line arguments for the 'pyramid' function
-parse_arguments_option_1() {
+parse_arguments_function_pyramid() {
 	local verbose="${verbose_default}"
 	local x=""
 	local y=""
@@ -139,7 +139,7 @@ parse_arguments_option_1() {
 }
 
 # Function to parse command line arguments for the 'zoom' function
-parse_arguments_option_2() {
+parse_arguments_function_zoom() {
 	local verbose="${verbose_default}"
 	local demUrl=""
 	local oDir="${oDir_default}"
@@ -220,7 +220,7 @@ parse_arguments_option_2() {
 }
 
 # Function to parse command line arguments for the 'bbox' function
-parse_arguments_option_3() {
+parse_arguments_function_bbox() {
 	local minx=""
 	local miny=""
 	local maxx=""
@@ -382,7 +382,7 @@ bbox_to_tiles() {
 export -f bbox_to_tiles
 
 # Function to run the 'pyramid' command.
-run_option_1() {
+run_function_pyramid() {
 	local programOptions="$1"
 	read -r x y z demUrl sEncoding sMaxZoom increment oMaxZoom oDir verbose processes <<<"${programOptions}"
 
@@ -400,7 +400,7 @@ run_option_1() {
 }
 
 # Function to run the 'zoom' command.
-run_option_2() {
+run_function_zoom() {
 	local programOptions="$1"
 	read -r oMinZoom demUrl oDir increment sMaxZoom sEncoding oMaxZoom verbose processes <<<"${programOptions}"
 
@@ -442,7 +442,7 @@ run_option_2() {
 }
 
 # Function to run the 'bbox' command.
-run_option_3() {
+run_function_bbox() {
 	local programOptions="$1"
 	read oMinZoom demUrl oDir increment sMaxZoom sEncoding oMaxZoom verbose processes minx miny maxx maxy <<<"${programOptions}"
 
@@ -524,31 +524,31 @@ trap 'kill $(jobs -p); exit 1' INT TERM
 
 case "${function}" in
 "pyramid")
-	programOptions=$(parse_arguments_option_1 "$@")
+	programOptions=$(parse_arguments_function_pyramid "$@")
 	ret="$?" # capture exit status
 	if [[ "${ret}" -ne 0 ]]; then
 		# Error message will already be handled above
 		exit "${ret}"
 	fi
-	run_option_1 "${programOptions}"
+	run_function_pyramid "${programOptions}"
 	;;
 "zoom")
-	programOptions=$(parse_arguments_option_2 "$@")
+	programOptions=$(parse_arguments_function_zoom "$@")
 	ret="$?" # capture exit status
 	if [[ "${ret}" -ne 0 ]]; then
 		# Error message will already be handled above
 		exit "${ret}"
 	fi
-	run_option_2 "${programOptions}"
+	run_function_zoom "${programOptions}"
 	;;
 "bbox")
-	programOptions=$(parse_arguments_option_3 "$@")
+	programOptions=$(parse_arguments_function_bbox "$@")
 	ret="$?" # capture exit status
 	if [[ "${ret}" -ne 0 ]]; then
 		# Error message will already be handled above
 		exit "${ret}"
 	fi
-	run_option_3 "${programOptions}"
+	run_function_bbox "${programOptions}"
 	;;
 *)
 	echo "Invalid function: ${function}" >&2
