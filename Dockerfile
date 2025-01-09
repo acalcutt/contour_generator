@@ -20,11 +20,8 @@ FROM node:22-slim
 RUN apt-get update && apt-get install -y bc
 RUN npm i -g npm@latest
 
-# Create a non-root user
-RUN groupadd -r appuser && useradd -r -g appuser appuser
-
 # Create folder for data mapping and set ownership (as root)
-RUN mkdir -p /data && chown appuser:appuser /data
+RUN mkdir -p /data
 VOLUME /data
 
 # Copy all files from the builder stage
@@ -33,9 +30,6 @@ WORKDIR /app
 
 # Make the shell script executable (as root)
 RUN chmod +x /app/generate_tiles.sh
-
-# Switch to non-root user
-USER appuser
 
 # Entrypoint to allow running commands
 ENTRYPOINT ["/app/generate_tiles.sh"]
