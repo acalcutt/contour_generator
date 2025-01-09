@@ -55,11 +55,9 @@ export function openPMtiles(FilePath: string): PMTiles {
 
   try {
     if (httpTester.test(FilePath)) {
-      console.log('pmtiles http: ' + FilePath);
       const source = new FetchSource(FilePath);
       pmtiles = new PMTiles(source);
     } else {
-      console.log('pmtiles local: ' + FilePath);
       fd = fs.openSync(FilePath, "r");
       const source = new PMTilesFileSource(fd);
       pmtiles = new PMTiles(source);
