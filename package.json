@@ -1,15 +1,13 @@
 {
   "name": "contour_generator",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Locally generates contour vector tiles using maplibre-contour",
   "main": "src/generate-countour-tile-pyramid.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write \"**/*.{ts,js,json}\"",
-    "format:sh": "find . -name \"*.sh\" -print0 | xargs -0 shfmt -w",
     "lint": "eslint \"**/*.{ts,js}\"",
-    "lint:sh": "find . -name \"*.sh\" -print0 | xargs -0 shellcheck",
-    "check": "npm run format && npm run format:sh && npm run lint && npm run lint:sh"
+    "check": "npm run format && npm run lint"
   },
   "repository": {
     "type": "git",
