@@ -176,6 +176,6 @@ bbox function (Run Locally w/pmtiles https source):
   # Test View Area #5/44.96/-73.35
 ```
 
-# Test Data License Inforamtion
+# Test Data License Information
 AWS mapzen terrarium tiles: https://registry.opendata.aws/terrain-tiles/
 JAXA AW3D30: https://earth.jaxa.jp/en/data/policy/ 
