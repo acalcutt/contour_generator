@@ -120,7 +120,7 @@ npm install
 
 # Local Examples:
 
-pyramid function (Run Locally w/zxyPattern source):
+pyramid function (Run Locally w/pmtiles https source):
 ```
 ./generate_tiles.sh pyramid \
   --z 9 \
@@ -157,7 +157,7 @@ wget https://github.com/acalcutt/contour_generator/releases/download/test_data/J
   # Note: some "No tile returned for" messages are normal with this JAXA dataset since there are areas without tiles
 ```
 
-bbox function (Run Locally w/pmtiles https source):
+bbox function (Run Locally w/zxyPattern source):
 ```
 ./generate_tiles.sh bbox \
   --minx -73.51 \
