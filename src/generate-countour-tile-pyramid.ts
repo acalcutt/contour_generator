@@ -168,7 +168,7 @@ const demManagerOptions = {
   cacheSize: 100,
   encoding: encoding as Encoding,
   maxzoom: numsourceMaxZoom,
-  timeoutMs: 10000,
+  timeoutMs: 120000,
   decodeImage: GetImageData,
   ...(pmtilesTester.test(demUrl)
     ? {
