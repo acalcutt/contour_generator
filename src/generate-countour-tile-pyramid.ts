@@ -174,6 +174,7 @@ const demManagerOptions = {
     ? {
         demUrlPattern: "/{z}/{x}/{y}",
         getTile: async (url: string, _abortController: AbortController) => {
+          console.log('PmMiles getTile');
           if (!pmtiles) return;
 
           const $zxy = extractZXYFromUrlTrim(url);
