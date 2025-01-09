@@ -1,8 +1,12 @@
 import { Command } from "commander";
 import { writeFileSync, mkdir } from "fs";
 import { default as mlcontour } from "../node_modules/maplibre-contour/dist/index.mjs";
-import { extractZXYFromUrlTrim, GetImageData, getOptionsForZoom } from "./mlcontour-adapter";
-import { getPMtilesTile, openPMtiles,} from "./pmtiles-adapter";
+import {
+  extractZXYFromUrlTrim,
+  GetImageData,
+  getOptionsForZoom,
+} from "./mlcontour-adapter";
+import { getPMtilesTile, openPMtiles } from "./pmtiles-adapter";
 import { getChildren } from "@mapbox/tilebelt";
 import path from "path";
 import type { Encoding } from "../node_modules/maplibre-contour/dist/types";
@@ -25,12 +29,12 @@ program
     "The URL of the DEM source (can be a PMTiles URL: 'pmtiles://...') or a regular tile URL pattern.",
   )
   .option(
-    "--sEncoding <string>",
+    "--encoding <string>",
     "The encoding of the source DEM tiles (e.g., 'terrarium', 'mapbox').",
     (value) => {
       if (value !== "mapbox" && value !== "terrarium") {
         throw new Error(
-          "Invalid value for --sEncoding, must be 'mapbox' or 'terrarium'",
+          "Invalid value for --encoding, must be 'mapbox' or 'terrarium'",
         );
       }
       return value;
@@ -38,48 +42,47 @@ program
     "mapbox", // default value
   )
   .option(
-    "--sMaxZoom <number>",
+    "--sourceMaxZoom <number>",
     "The maximum zoom level of the source DEM.",
     "8", // default value as a string
   )
+  .option("--increment <number>", "The contour increment value to extract.")
   .option(
-    "--increment <number>",
-    "The contour increment value to extract."
-  )
-  .option(
-    "--oMaxZoom <number>",
+    "--outputMaxZoom <number>",
     "The maximum zoom level of the output tile pyramid.",
     "8", // default value as a string
   )
   .requiredOption(
-    "--oDir <string>",
+    "--outputDir <string>",
     "The output directory where tiles will be stored.",
   )
   .parse(process.argv);
 
 const options = program.opts();
-const { x, y, z, demUrl, sEncoding, sMaxZoom, increment, oMaxZoom, oDir } =
+const { x, y, z, demUrl, encoding, sourceMaxZoom, increment, outputMaxZoom, outputDir } =
   options;
 const numX = Number(x);
 const numY = Number(y);
 const numZ = Number(z);
-const numSMaxZoom = Number(sMaxZoom);
+const numsourceMaxZoom = Number(sourceMaxZoom);
 const numIncrement = Number(increment);
-const numOMaxZoom = Number(oMaxZoom);
+const numoutputMaxZoom = Number(outputMaxZoom);
 
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
 
-function getAllTiles(tile: Tile, maxZoom: number): Tile[] {
+function getAllTiles(tile: Tile, outputMaxZoom: number): Tile[] {
   let allTiles: Tile[] = [tile];
 
   function getTileList(tile: Tile) {
-    const children: Tile[] = getChildren(tile);
+    const children: Tile[] = getChildren(tile).filter(
+      (child) => child[2] <= outputMaxZoom,
+    );
     allTiles = allTiles.concat(children);
     for (const childTile of children) {
       const childZoom = childTile[2];
-      if (childZoom < maxZoom) {
+      if (childZoom < outputMaxZoom) {
         getTileList(childTile);
       }
     }
@@ -93,22 +96,16 @@ async function processTile(v: Tile): Promise<void> {
   const z: number = v[2];
   const x: number = v[0];
   const y: number = v[1];
-  const dirPath: string = path.join(oDir, `${z}`, `${x}`);
+  const dirPath: string = path.join(outputDir, `${z}`, `${x}`);
   const filePath: string = path.join(dirPath, `${y}.pbf`);
 
   let tileOptions = contourOptions;
   if ("thresholds" in contourOptions) {
-    tileOptions = getOptionsForZoom(contourOptions, z)
+    tileOptions = getOptionsForZoom(contourOptions, z);
   }
 
   return manager
-    .fetchContourTile(
-      z,
-      x,
-      y,
-      tileOptions,
-      new AbortController(),
-    )
+    .fetchContourTile(z, x, y, tileOptions, new AbortController())
     .then((tile) => {
       return new Promise<void>((resolve, reject) => {
         mkdir(dirPath, { recursive: true }, (err) => {
@@ -145,14 +142,21 @@ async function processQueue(
 
 const contourOptions = {
   multiplier: 1,
-  ...(numIncrement ? { levels: [numIncrement] } : {
-    thresholds: {
-      1: 500,
-      9: 100,
-      11: 50,
-      12: 10,
-    }
-  }),
+  ...(numIncrement
+    ? { levels: [numIncrement] }
+    : {
+        thresholds: {
+        1: [600, 3000],
+        4: [300, 1500],
+        8: [150, 750],
+        9: [80, 400],
+        10: [40, 200],
+        11: [20, 100],
+        12: [10, 50],
+        14: [5, 25],
+        16: [1, 5],
+        },
+      }),
   contourLayer: "contours",
   elevationKey: "ele",
   levelKey: "level",
@@ -162,36 +166,35 @@ const contourOptions = {
 
 const demManagerOptions = {
   cacheSize: 100,
-  encoding: sEncoding as Encoding,
-  maxzoom: numSMaxZoom,
+  encoding: encoding as Encoding,
+  maxzoom: numsourceMaxZoom,
   timeoutMs: 10000,
   decodeImage: GetImageData,
   ...(pmtilesTester.test(demUrl)
-      ? {
-          demUrlPattern: "/{z}/{x}/{y}",
-          getTile: async (url: string, abortController: AbortController) => {
-              if (!pmtiles) return;
+    ? {
+        demUrlPattern: "/{z}/{x}/{y}",
+        getTile: async (url: string, _abortController: AbortController) => {
+          if (!pmtiles) return;
 
-              const $zxy = extractZXYFromUrlTrim(url);
-              if (!$zxy) {
-                  throw new Error(`Could not extract zxy from ${url}`);
-              }
+          const $zxy = extractZXYFromUrlTrim(url);
+          if (!$zxy) {
+            throw new Error(`Could not extract zxy from ${url}`);
+          }
 
-              const zxyTile = await getPMtilesTile(pmtiles, $zxy.z, $zxy.x, $zxy.y);
-              if (!zxyTile || !zxyTile.data) {
-                  throw new Error(`No tile returned for ${url}`);
-              }
+          const zxyTile = await getPMtilesTile(pmtiles, $zxy.z, $zxy.x, $zxy.y);
+          if (!zxyTile || !zxyTile.data) {
+            throw new Error(`No tile returned for ${url}`);
+          }
 
-              const blob = new Blob([zxyTile.data]);
-              return {
-                  data: blob,
-                  expires: undefined,
-                  cacheControl: undefined,
-              };
-            },
-        }
-    : { demUrlPattern: demUrl }
-  ),
+          const blob = new Blob([zxyTile.data]);
+          return {
+            data: blob,
+            expires: undefined,
+            cacheControl: undefined,
+          };
+        },
+      }
+    : { demUrlPattern: demUrl }),
 };
 
 // --------------------------------------------------
@@ -200,13 +203,13 @@ const demManagerOptions = {
 
 let pmtiles: PMTiles;
 if (pmtilesTester.test(demUrl)) {
-    pmtiles = openPMtiles(demUrl.replace(pmtilesTester, ""));
+  pmtiles = openPMtiles(demUrl.replace(pmtilesTester, ""));
 }
 
-const manager = new mlcontour.LocalDemManager(demManagerOptions)
+const manager = new mlcontour.LocalDemManager(demManagerOptions);
 
 // Use parsed command line args
-const children: Tile[] = getAllTiles([numX, numY, numZ], numOMaxZoom);
+const children: Tile[] = getAllTiles([numX, numY, numZ], numoutputMaxZoom);
 
 children.sort((a, b) => {
   //Sort by Z first

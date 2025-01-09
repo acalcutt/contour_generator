@@ -1,6 +1,10 @@
 import sharp from "sharp";
 import { default as mlcontour } from "../node_modules/maplibre-contour/dist/index.mjs";
-import type { DemTile, Encoding, GlobalContourTileOptions } from "../node_modules/maplibre-contour/dist/types";
+import type {
+  DemTile,
+  Encoding,
+  GlobalContourTileOptions,
+} from "../node_modules/maplibre-contour/dist/types";
 
 /**
  * Processes image data from a blob.

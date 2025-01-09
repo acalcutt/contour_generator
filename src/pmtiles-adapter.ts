@@ -33,7 +33,7 @@ async function readFileBytes(
   offset: number,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    fs.read(fd, buffer, 0, buffer.length, offset, (err, bytesRead, buff) => {
+    fs.read(fd, buffer, 0, buffer.length, offset, (err, bytesRead, _buff) => {
       if (err) {
         return reject(err);
       }
