@@ -178,8 +178,4 @@ bbox function (Run Locally w/zxyPattern source):
 
 # Test Data License Information
 AWS mapzen terrarium tiles: https://registry.opendata.aws/terrain-tiles/
-JAXA AW3D30: https://earth.jaxa.jp/en/data/policy/ 
-
-
-
-npm run generate-contour-tile-pyramid -- --x 272 --y 179 --z 9 --demUrl pmtiles://https://acalcutt.github.io/contour_generator/test_data/terrain-tiles.pmtiles --encoding mapbox --sourceMaxZoom 12 --increment 0 --outputMaxZoom 15 --outputDir ./output
+JAXA AW3D30: https://earth.jaxa.jp/en/data/policy/
