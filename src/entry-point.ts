@@ -236,7 +236,7 @@ async function runZoom(options: ZoomOptions): Promise<void> {
 }
 
 async function runBbox(options: BboxOptions): Promise<void> {
-  const coordinates = await bboxToTiles(
+  const coordinates = bboxToTiles(
     options.minx,
     options.miny,
     options.maxx,
