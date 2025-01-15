@@ -17,7 +17,7 @@ const pmtilesTester = /^pmtiles:\/\//i;
 
 const program = new Command();
 program
-  .name("generate-countour-tile-pyramid")
+  .name("generate-contour-tile-pyramid")
   .description(
     "Generates a pyramid of contour tiles from a source DEM using the mlcontour library.",
   )

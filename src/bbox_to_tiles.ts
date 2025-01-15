@@ -31,34 +31,21 @@ const calculateTileRangeForBounds = (
   return { minX, minY, maxX, maxY };
 };
 
-function bboxToTiles(
+export function bboxToTiles(
   minx: number,
   miny: number,
   maxx: number,
   maxy: number,
   zoom: number,
-): string {
+): [number, number, number][] {
   const bounds: [number, number, number, number] = [minx, miny, maxx, maxy];
   const { minX, minY, maxX, maxY } = calculateTileRangeForBounds(bounds, zoom);
 
-  let tiles = "";
+  let tiles: [number, number, number][] = [];
   for (let y = minY; y <= maxY; y++) {
     for (let x = minX; x <= maxX; x++) {
-      tiles += `${zoom} ${x} ${y} `;
+      tiles.push([zoom, x, y]);
     }
   }
   return tiles;
 }
-
-const args = process.argv.slice(2);
-const [minx, miny, maxx, maxy, zoom] = args;
-
-console.log(
-  bboxToTiles(
-    Number(minx),
-    Number(miny),
-    Number(maxx),
-    Number(maxy),
-    Number(zoom),
-  ),
-);
