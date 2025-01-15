@@ -66,7 +66,12 @@ function generateTileCoordinates(
   return coordinates;
 }
 
-// Function to create metadata.json
+/**
+ * Function to create metadata.json
+ * @param outputDir - The output directory
+ * @param outputMinZoom - The minimum zoom level of the output
+ * @param outputMaxZoom - The maximum zoom level of the output
+ */
 async function createMetadata(
   outputDir: string,
   outputMinZoom: number,
@@ -165,9 +170,9 @@ async function processTile(options: PyramidOptions): Promise<void> {
 }
 /**
  * Function to process tiles in parallel
- * @param coordinates
- * @param options
- * @param processes
+ * @param coordinates - The coordinates of the tiles to process
+ * @param options - The options for processing the tiles
+ * @param processes - The number of parallel processes to use
  */
 async function processTilesInParallel(
   coordinates: Array<[number, number, number]>,
