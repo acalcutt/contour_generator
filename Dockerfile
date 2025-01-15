@@ -22,4 +22,4 @@ COPY --from=builder /app /app
 WORKDIR /app
 
 # Entrypoint to allow running commands
-ENTRYPOINT ["npm run generate-contours --"]
+ENTRYPOINT ["/usr/local/bin/npm", "run", "generate-contours", "--"]
