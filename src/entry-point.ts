@@ -387,7 +387,7 @@ async function main(): Promise<void> {
       .option("-v, --verbose", "Enable verbose output", false);
   }
 
-  program.parse(process.argv);
+  await program.parseAsync(process.argv);
 }
 
 main();
