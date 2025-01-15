@@ -41,7 +41,7 @@ export function bboxToTiles(
   const bounds: [number, number, number, number] = [minx, miny, maxx, maxy];
   const { minX, minY, maxX, maxY } = calculateTileRangeForBounds(bounds, zoom);
 
-  let tiles: [number, number, number][] = [];
+  const tiles: [number, number, number][] = [];
   for (let y = minY; y <= maxY; y++) {
     for (let x = minX; x <= maxX; x++) {
       tiles.push([zoom, x, y]);

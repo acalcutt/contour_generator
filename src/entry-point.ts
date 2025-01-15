@@ -342,7 +342,7 @@ async function main(): Promise<void> {
     });
 
   // Add common options to all commands
-  for (let command of program.commands) {
+  for (const command of program.commands) {
     command
       .requiredOption("--demUrl <string>", "The URL of the DEM source.")
       .option(
