@@ -46,25 +46,6 @@ function validateEncoding(
     );
   }
 }
-/**
- * Function to generate tile coordinates
- * @param zoomLevel - The zoom level to generate coordinates for
- * @returns
- */
-function generateTileCoordinates(
-  zoomLevel: number,
-): Array<[number, number, number]> {
-  const tilesInDimension = Math.pow(2, zoomLevel);
-  const coordinates: Array<[number, number, number]> = [];
-
-  for (let y = 0; y < tilesInDimension; y++) {
-    for (let x = 0; x < tilesInDimension; x++) {
-      coordinates.push([zoomLevel, x, y]);
-    }
-  }
-
-  return coordinates;
-}
 
 /**
  * Function to create metadata.json
@@ -146,24 +127,24 @@ async function processTile(options: PyramidOptions): Promise<void> {
       "--outputDir",
       options.outputDir,
     ]);
-
+    const processPrefix = `Process ${options.z}-${options.x}-${options.y}: `;
     if (options.verbose) {
       process.stdout.on("data", (data) => {
-        console.log(data.toString().trim());
+        console.log(processPrefix + data.toString().trim());
+      });
+      process.stderr.on("data", (data) => {
+        console.log(processPrefix + data.toString().trim());
       });
     }
 
     process.on("close", (code) => {
       if (code === 0) {
         if (options.verbose) {
-          console.log(
-            `Finished processing ${options.z}-${options.x}-${options.y}`,
-          );
+          console.log(processPrefix + "Finished processing");
         }
         resolve();
       } else {
-        console.log(process);
-        reject(new Error(`Process exited with code ${code}`));
+        reject(new Error(processPrefix + `exited with code ${code}`));
       }
     });
   });
@@ -219,7 +200,14 @@ async function runZoom(options: ZoomOptions): Promise<void> {
     console.log("Main: [START] Processing tiles.");
   }
 
-  const coordinates = generateTileCoordinates(options.outputMinZoom);
+  const coordinates: Array<[number, number, number]> = [];
+  const tilesInDimension = Math.pow(2, options.outputMinZoom);
+  for (let y = 0; y < tilesInDimension; y++) {
+    for (let x = 0; x < tilesInDimension; x++) {
+      coordinates.push([options.outputMinZoom, x, y]);
+    }
+  }
+
   await processTilesInParallel(coordinates, options, options.processes);
 
   if (options.verbose) {
@@ -299,7 +287,7 @@ async function main(): Promise<void> {
   program
     .command("zoom")
     .description(
-      "Generates a list of parent tiles at a specified zoom level and runs pyramid on each.",
+      "Generates a list of parent tiles at a specified zoom level and runs pyramid on each. This command assumes you have the entire world at the specified zoom levels.",
     )
     .option(
       "--outputMinZoom <number>",
