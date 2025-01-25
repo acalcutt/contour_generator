@@ -65,4 +65,4 @@ jobs:
 
       - name: End to End Test zoom
         run: |
-          docker run --rm -v $(pwd):/data contour-generator zoom --demUrl "pmtiles:///data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles" --sourceMaxZoom 7  --encoding mapbox --outputMinZoom 5 --outputMaxZoom 6 --increment 100 --processes 4 --outputDir "./output_zoom" -v
+          docker run --rm -v $(pwd):/data contour-generator zoom --demUrl "pmtiles:///data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles" --sourceMaxZoom 7  --encoding mapbox --outputMinZoom 4 --outputMaxZoom 5 --increment 100 --processes 4 --outputDir "./output_zoom" -v
