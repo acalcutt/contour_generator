@@ -49,11 +49,11 @@ jobs:
 
       - name: End to End Test pyramid
         run: |
-          docker run --rm contour-generator:latest pyramid --z 9 --x 272 --y 179 --demUrl "pmtiles://https://acalcutt.github.io/contour_generator/test_data/terrain-tiles.pmtiles" --sourceMaxZoom 12  --encoding mapbox  --increment 0  --outputDir "./output_pyramid"  --outputMaxZoom 15  -v
+          docker run --rm contour-generator pyramid --z 9 --x 272 --y 179 --demUrl "pmtiles://https://acalcutt.github.io/contour_generator/test_data/terrain-tiles.pmtiles" --sourceMaxZoom 12  --encoding mapbox  --increment 0  --outputDir "./output_pyramid"  --outputMaxZoom 15  -v
 
       - name: End to End Test bbox
         run: |
-          docker run --rm contour-generator:latest bbox --minx -73.51 --miny 41.23 --maxx -69.93 --maxy 42.88 --demUrl "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" --sourceMaxZoom 15 --encoding terrarium --increment 50 --outputMinZoom 5 --outputMaxZoom 10 --outputDir "./output_bbox" -v
+          docker run --rm contour-generator bbox --minx -73.51 --miny 41.23 --maxx -69.93 --maxy 42.88 --demUrl "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" --sourceMaxZoom 15 --encoding terrarium --increment 50 --outputMinZoom 5 --outputMaxZoom 10 --outputDir "./output_bbox" -v
 
       - name: Download Test Data
         run: |
@@ -65,4 +65,4 @@ jobs:
 
       - name: End to End Test zoom
         run: |
-          docker run --rm -v $(pwd):/data contour-generator:latest zoom --demUrl "pmtiles:///data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles" --sourceMaxZoom 7  --encoding mapbox --outputMinZoom 5 --outputMaxZoom 6 --increment 100 --processes 4 --outputDir "./output_zoom" -v
+          docker run --rm -v $(pwd):/data contour-generator zoom --demUrl "pmtiles:///data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles" --sourceMaxZoom 7  --encoding mapbox --outputMinZoom 5 --outputMaxZoom 6 --increment 100 --processes 4 --outputDir "./output_zoom" -v
