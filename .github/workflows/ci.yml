@@ -52,3 +52,13 @@ jobs:
       - name: End to End Test bbox
         run: |
           docker run --rm wifidb/contour-generator:latest bbox --minx -73.51 --miny 41.23 --maxx -69.93 --maxy 42.88 --demUrl "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png" --sourceMaxZoom 15 --encoding terrarium --increment 50 --outputMinZoom 5 --outputMaxZoom 10 --outputDir "./output_bbox" -v
+      - name: Download Test Data
+        run: |
+          curl -L -o JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles https://github.com/acalcutt/contour_generator/releases/download/test_data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles
+          if [[ $? -ne 0 ]]; then
+             echo "Error downloading the test data!"
+             exit 1
+          fi
+      - name: End to End Test zoom
+        run: |
+          docker run --rm wifidb/contour-generator:latest zoom --z 9 --x 272 --y 179 --demUrl "pmtiles:///data/JAXA_2024_terrainrgb_z0-Z7_webp.pmtiles" --sourceMaxZoom 7  --encoding mapbox --outputMinZoom 5 --outputMaxZoom 6 --increment 100 --processes 4 --outputDir "./output_zoom" -v
